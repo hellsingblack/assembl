@@ -1,8 +1,6 @@
 rdflib
 rdfextras
--e git://github.com/maparent/pyodbc.git@2.x_branch#egg=pyodbc
+-e git://github.com/maparent/pyodbc.git@v2.1#egg=pyodbc
 -e svn+http://surfrdf.googlecode.com/svn/trunk/#egg=surf
 -e hg+https://bitbucket.org/maparent/virtuoso#egg=virtuoso
-
-#SuRF
-#-e git://github.com/maparent/rdflib-sparqlstore.git#egg=rdflib-sparqlstore
+-e git://github.com/maparent/rdflib-sparqlstore.git#egg=rdflib-sparqlstore
