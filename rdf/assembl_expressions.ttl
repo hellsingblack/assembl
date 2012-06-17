@@ -1,0 +1,167 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix sioc: <http://rdfs.org/sioc/ns#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix oann: <http://www.openannotation.org/ns/> .
+@prefix graph: <http://www.w3.org/2004/03/trix/rdfg-1/>.
+@prefix assembl: <http://assembl.net/ns/expressions/> .
+
+# Notes:
+# Most of the existing messaging ontology (threads, posts, containers) is already described in SIOC. Use it.
+# 
+# Technically I expect we'll use tables for the posts. The automatic exposition as RDF in virtuoso may be good.
+# But I don't know if we can extend SuRF to sometimes use SQLAlchemy objects, sometimes use SuRF objects...
+
+# from foaf
+
+foaf:Agent a owl:Class .
+foaf:Document a owl:Class .
+foaf:OnlineAccount a owl:Class .
+foaf:Project a owl:Class .
+foaf:Person a owl:Class ; 
+	rdfs:subClassOf <http://www.w3.org/2000/10/swap/pim/contact#Person>,
+	<http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing>,
+	foaf:Agent .
+foaf:Group a owl:Class ; rdfs:subClassOf foaf:Agent .
+foaf:account a owl:ObjectProperty .
+foaf:depiction a owl:ObjectProperty .
+foaf:topic a owl:ObjectProperty ;
+    rdfs:domain foaf:Document ;
+    rdfs:range owl:Thing ;
+    owl:inverseOf foaf:page .
+foaf:primaryTopic a owl:FunctionalProperty;
+    rdfs:domain foaf:Document ;
+    rdfs:range owl:Thing.
+
+# from SiOC
+
+sioc:Community a owl:Class .
+sioc:Container a owl:Class .
+sioc:Forum a owl:Class ; rdfs:subClassOf sioc:Container .
+sioc:Item a owl:Class .
+sioc:Post a owl:Class ; rdfs:subClassOf sioc:Item, foaf:Document .
+sioc:Role a owl:Class .
+sioc:Site a owl:Class ; rdfs:subClassOf sioc:Space .
+sioc:Space a owl:Class .
+sioc:Thread a owl:Class ; rdfs:subClassOf sioc:Container .
+sioc:UserAccount a owl:Class ; rdfs:subClassOf foaf:OnlineAccount .
+sioc:Usergroup a owl:Class .
+
+sioc:embeds_knowledge
+    a owl:ObjectProperty ;
+    rdfs:domain sioc:Item ;
+    rdfs:range graph:Graph .
+
+# assembl starts here
+
+assembl:Document a owl:Class;
+	owl:subClassOf sioc:Item, oann:Target, foaf:Document.
+
+assembl:Post a owl:Class; owl:subClassOf sioc:Post, assembl:Document.
+
+assembl:MutableDocument a owl:Class;
+	rdfs:comment "Documents whose content can change."@en ;
+	rdfs:subClassOf assembl:Document . # not at all sure about that subclass
+
+assembl:VersionableDocument a owl:Class;
+	rdfs:comment "Mutable documents with named versions."@en ;
+	rdfs:subClassOf assembl:MutableDocument .
+
+assembl:Snapshot a owl:Class;
+	rdfs:subClassOf assembl:Document.
+
+assembl:snapshotOf a owl:ObjectProperty;
+	rdfs:domain assembl:Snapshot;
+	rdfs:range assembl:MutableDocument.
+
+assembl:NamedSnapshot a owl:Class;
+	rdfs:subClassOf assembl:Snapshot.
+
+assembl:NamedSnapshotOf a owl:ObjectProperty;
+	rdfs:subPropertyOf assembl:snapshotOf;
+	rdfs:range assembl:VersionableDocument.
+
+assembl:snapshotVersion a owl:ObjectProperty;
+	rdfs:domain assembl:NamedSnapshot;
+	rdfs:range rdfs:Literal.
+
+assembl:snapshotTime a owl:ObjectProperty;
+	rdfs:domain assembl:Snapshot;
+	rdfs:range xsd:dateTime.
+
+assembl:Expression a owl:Class;
+	rdfs:comment "A fragment of an item or document."@en;
+	rdfs:subClassOf oann:Annotation.
+
+assembl:expressionContent a owl:ObjectProperty;
+	rdfs:domain assembl:Expression;
+	rdfs:range rdfs:Literal, xsd:string .
+	# hmmm... reln with oann:ConstrainedTarget unclear
+
+assembl:origin a owl:ObjectProperty;
+	rdfs:domain assembl:Expression;
+	rdfs:range assembl:Document.
+
+assembl:originLocation a owl:ObjectProperty;
+	rdfs:comment """The location of the expression in the origin document. 
+	Use openannotation.org """@en ;
+	rdfs:domain assembl:Expression;
+	rdfs:range oann:Constraint .
+
+assembl:Concept a owl:Class;
+	rdfs:subClassOf owl:Thing .
+
+assembl:definitionExpression a owl:ObjectProperty;
+	rdfs:domain assembl:Concept;
+	rdfs:range assembl:Expression .
+
+assembl:definition a owl:ObjectProperty;
+	rdfs:subPropertyOf dcterms:description .
+
+# sigh. OWL2.
+[] rdfs:subPropertyOf assembl:definition;
+   owl:propertyChain (
+     assembl:definitionExpression
+     assembl:expressionContent
+     ).
+
+assembl:shortExpression a owl:ObjectProperty;
+	rdfs:subPropertyOf assembl:definitionExpression .
+
+assembl:ActiveDocument a owl:Class;
+	rdfs:comment "A mutable document controlled by Assembl."@en ;
+	rdfs:subClassOf assembl:Document, assembl:VersionableDocument .
+
+assembl:conceptDocument a owl:ObjectProperty;
+	rdfs:range assembl:Concept;
+	rdfs:domain assembl:ActiveDocument.
+
+assembl:expressionOf a owl:ObjectProperty;
+	rdfs:range assembl:Expression;
+	rdfs:domain assembl:Concept.
+
+assembl:obsoleteExpressionOf a owl:ObjectProperty;
+	rdfs:subPropertyOf assembl:expressionOf.
+
+assembl:Viewpoint a owl:Class;
+	rdfs:subClassOf graph:Graph, sioc:Container.
+
+assembl:DebateSpace a owl:Class;
+	rdfs:subClassOf graph:Graph, sioc:Container.
+
+assembl:DebatePhase a owl:Class;
+	rdfs:subClassOf assembl:DebateSpace.
+
+assembl:Debate a owl:Class;
+	rdfs:subClassOf assembl:DebateSpace.
+
+assembl:DebateForum a owl:Class;
+	rdfs:subClassOf sioc:Forum.
+
+assembl:forum a owl:FunctionalProperty;
+	rdfs:domain assembl:DebateSpace;
+	rdfs:range assembl:DebateForum.
