@@ -6,7 +6,7 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix sioc: <http://rdfs.org/sioc/ns#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix oann: <http://www.openannotation.org/ns/> .
+@prefix oac: <http://www.openannotation.org/ns/> .
 @prefix graph: <http://www.w3.org/2004/03/trix/rdfg-1/>.
 @prefix assembl: <http://assembl.net/ns/expressions/> .
 
@@ -59,7 +59,7 @@ sioc:embeds_knowledge
 # assembl starts here
 
 assembl:Document a owl:Class;
-	owl:subClassOf sioc:Item, oann:Target, foaf:Document.
+	owl:subClassOf sioc:Item, oac:Target, foaf:Document.
 
 assembl:Post a owl:Class; owl:subClassOf sioc:Post, assembl:Document.
 
@@ -95,22 +95,20 @@ assembl:snapshotTime a owl:ObjectProperty;
 
 assembl:Expression a owl:Class;
 	rdfs:comment "A fragment of an item or document."@en;
-	rdfs:subClassOf oann:Annotation.
+	rdfs:subClassOf oac:Annotation.
 
-assembl:expressionContent a owl:ObjectProperty;
+assembl:DocumentFragment a owl:Class;
+	rdfs:subClassOf assembl:Document, oac:ConstrainedTarget;
+
+assembl:expressionTarget a owl:ObjectProperty;
+	rdfs:subPropertyOf oac:hasTarget;
 	rdfs:domain assembl:Expression;
+	rdfs:range assembl:DocumentFragment;
+
+assembl:fragmentText a owl:FunctionalProperty;
+	rdfs:domain assembl:DocumentFragment;
 	rdfs:range rdfs:Literal, xsd:string .
-	# hmmm... reln with oann:ConstrainedTarget unclear
 
-assembl:origin a owl:ObjectProperty;
-	rdfs:domain assembl:Expression;
-	rdfs:range assembl:Document.
-
-assembl:originLocation a owl:ObjectProperty;
-	rdfs:comment """The location of the expression in the origin document. 
-	Use openannotation.org """@en ;
-	rdfs:domain assembl:Expression;
-	rdfs:range oann:Constraint .
 
 assembl:Concept a owl:Class;
 	rdfs:subClassOf owl:Thing .
@@ -122,11 +120,13 @@ assembl:definitionExpression a owl:ObjectProperty;
 assembl:definition a owl:ObjectProperty;
 	rdfs:subPropertyOf dcterms:description .
 
-# sigh. OWL2.
+# sigh. owl:propertyChain is an OWL2 construct. 
+# I am saying: infer assembl:definition when you see that chain.
 [] rdfs:subPropertyOf assembl:definition;
    owl:propertyChain (
      assembl:definitionExpression
-     assembl:expressionContent
+     assembl:expressionTarget
+     assembl:fragmentText
      ).
 
 assembl:shortExpression a owl:ObjectProperty;
