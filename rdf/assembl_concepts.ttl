@@ -1,0 +1,78 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix sioc: <http://rdfs.org/sioc/ns#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix oac: <http://www.openannotation.org/ns/> .
+@prefix graph: <http://www.w3.org/2004/03/trix/rdfg-1/>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
+@prefix aif: <http://www.arg.dundee.ac.uk/aif#> .
+@prefix assembl: <http://assembl.net/ns/core/> .
+@prefix assemblc: <http://assembl.net/ns/concepts/> .
+
+assemblc:Situation a owl:Class;
+	rdfs:subClassOf assembl:Concept, dul:Situation.
+
+assemblc:Action a owl:Class;
+	rdfs:subClassOf assemblc:Situation, dul:Action.
+
+assemblc:Transition a owl:Class;
+	rdfs:subClassOf assemblc:Concept, dul:Transition.
+
+assemblc:DesirabilityVote a owl:Class;
+	rdfs:subClassOf assembl:Vote.
+
+assemblc:desirability_of rdfs:subPropertyOf assembl:topic;
+	rdfs:domain assemblc:DesirabilityVote;
+	rdfs:range assemblc:Situation.
+
+assemblc:PlausibilityVote a owl:Class;
+	rdfs:subClassOf assembl:Vote.
+
+assemblc:plausibility_of rdfs:subPropertyOf assembl:topic;
+	rdfs:domain assemblc:PlausibilityVote;
+	rdfs:range assemblc:Sequence.
+
+# Should those be objects rather than properties?
+# Probably, as it allows to assign metadata (creator, date...)
+# and have a historical view. But let's start with properties for now...
+assemblc:has_cause a rdfs:FunctionalProperty;
+	rdfs:domain assemblc:Sequence;
+	rdfs:range assemblc:Situation.
+
+assemblc:has_effect a rdfs:FunctionalProperty;
+	rdfs:domain assemblc:Sequence;
+	rdfs:range assemblc:Situation.
+
+assemblc:Argument a owl:Class;
+	rdfs:subClassOf assembl:Concept, aif:Statement;
+
+assemblc:argument_about a owl:FunctionalProperty;
+	rdfs:domain assemblc:Argument;
+	rdfs:range assemblc:Sequence.
+
+assemblc:ArgumentValenceScheme a skos:ConceptScheme.
+
+assemblc:ArgumentValence a owl:Class;
+	rdfs:subClassOf skos:Concept;
+	skos:inScheme assemblc:ArgumentValenceScheme.
+
+assemblc:has_valence a owl:FunctionalProperty;
+	rdfs:domain assemblc:Argument;
+	rdfs:range assemblc:ArgumentValence.
+
+assemblc:argument_valence a owl:FunctionalProperty;
+	rdfs:domain assemblc:Argument;
+	rdfs:range assemblc:ArgumentValence.
+
+dul:hasPart a owl:TransitiveProperty;
+
+# TODO
+# * Abstraction of similar concepts.
+# * Relative votes
+# * Attribution (procès d'intention)
+

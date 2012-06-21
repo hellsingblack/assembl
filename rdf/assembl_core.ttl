@@ -8,7 +8,9 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix oac: <http://www.openannotation.org/ns/> .
 @prefix graph: <http://www.w3.org/2004/03/trix/rdfg-1/>.
-@prefix assembl: <http://assembl.net/ns/expressions/> .
+@prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix assembl: <http://assembl.net/ns/core/> .
 
 # Notes:
 # Most of the existing messaging ontology (threads, posts, containers) is already described in SIOC. Use it.
@@ -58,6 +60,14 @@ sioc:embeds_knowledge
 
 # assembl starts here
 
+<http://assembl.net/ns/excerpts/>
+    dcterms:description """Notion of assembly, with its phases and forums. Documents, excerpts and concepts."""@en ;
+    dcterms:title "Assembl Core Ontology Namespace"@en ;
+    a owl:Ontology, owl:Thing ;
+    rdfs:seeAlso <http://rdfs.org/sioc/spec> ;
+    owl:versionInfo "Revision: 1.35" .
+
+
 assembl:Document a owl:Class;
 	owl:subClassOf sioc:Item, oac:Target, foaf:Document.
 
@@ -93,17 +103,17 @@ assembl:snapshotTime a owl:ObjectProperty;
 	rdfs:domain assembl:Snapshot;
 	rdfs:range xsd:dateTime.
 
-assembl:Expression a owl:Class;
+assembl:Excerpt a owl:Class;
 	rdfs:comment "A fragment of an item or document."@en;
 	rdfs:subClassOf oac:Annotation.
 
 assembl:DocumentFragment a owl:Class;
-	rdfs:subClassOf assembl:Document, oac:ConstrainedTarget;
+	rdfs:subClassOf assembl:Document, oac:ConstrainedTarget .
 
-assembl:expressionTarget a owl:ObjectProperty;
+assembl:excerptTarget a owl:ObjectProperty;
 	rdfs:subPropertyOf oac:hasTarget;
-	rdfs:domain assembl:Expression;
-	rdfs:range assembl:DocumentFragment;
+	rdfs:domain assembl:Excerpt;
+	rdfs:range assembl:DocumentFragment .
 
 assembl:fragmentText a owl:FunctionalProperty;
 	rdfs:domain assembl:DocumentFragment;
@@ -111,11 +121,11 @@ assembl:fragmentText a owl:FunctionalProperty;
 
 
 assembl:Concept a owl:Class;
-	rdfs:subClassOf owl:Thing .
+	rdfs:subClassOf owl:Thing , dul:Entity.
 
-assembl:definitionExpression a owl:ObjectProperty;
+assembl:definitionExcerpt a owl:ObjectProperty;
 	rdfs:domain assembl:Concept;
-	rdfs:range assembl:Expression .
+	rdfs:range assembl:Excerpt .
 
 assembl:definition a owl:ObjectProperty;
 	rdfs:subPropertyOf dcterms:description .
@@ -124,13 +134,13 @@ assembl:definition a owl:ObjectProperty;
 # I am saying: infer assembl:definition when you see that chain.
 [] rdfs:subPropertyOf assembl:definition;
    owl:propertyChain (
-     assembl:definitionExpression
-     assembl:expressionTarget
+     assembl:definitionExcerpt
+     assembl:excerptTarget
      assembl:fragmentText
      ).
 
-assembl:shortExpression a owl:ObjectProperty;
-	rdfs:subPropertyOf assembl:definitionExpression .
+assembl:shortExcerpt a owl:ObjectProperty;
+	rdfs:subPropertyOf assembl:definitionExcerpt .
 
 assembl:ActiveDocument a owl:Class;
 	rdfs:comment "A mutable document controlled by Assembl."@en ;
@@ -140,28 +150,56 @@ assembl:conceptDocument a owl:ObjectProperty;
 	rdfs:range assembl:Concept;
 	rdfs:domain assembl:ActiveDocument.
 
-assembl:expressionOf a owl:ObjectProperty;
-	rdfs:range assembl:Expression;
+assembl:excerptOf a owl:ObjectProperty;
+	rdfs:range assembl:Excerpt;
 	rdfs:domain assembl:Concept.
 
-assembl:obsoleteExpressionOf a owl:ObjectProperty;
-	rdfs:subPropertyOf assembl:expressionOf.
+assembl:obsoleteExcerptOf a owl:ObjectProperty;
+	rdfs:subPropertyOf assembl:excerptOf.
 
 assembl:Viewpoint a owl:Class;
 	rdfs:subClassOf graph:Graph, sioc:Container.
 
-assembl:DebateSpace a owl:Class;
+assembl:AssemblySpace a owl:Class;
 	rdfs:subClassOf graph:Graph, sioc:Container.
 
-assembl:DebatePhase a owl:Class;
-	rdfs:subClassOf assembl:DebateSpace.
+assembl:AssemblyPhase a owl:Class;
+	rdfs:subClassOf assembl:AssemblySpace.
 
-assembl:Debate a owl:Class;
-	rdfs:subClassOf assembl:DebateSpace.
+assembl:Assembly a owl:Class;
+	rdfs:subClassOf assembl:AssemblySpace.
 
-assembl:DebateForum a owl:Class;
+assembl:AssemblyForum a owl:Class;
 	rdfs:subClassOf sioc:Forum.
 
-assembl:forum a owl:FunctionalProperty;
-	rdfs:domain assembl:DebateSpace;
-	rdfs:range assembl:DebateForum.
+assembl:has_forum a owl:FunctionalProperty;
+	rdfs:domain assembl:AssemblySpace;
+	rdfs:range assembl:AssemblyForum.
+
+assembl:moderator_of a owl:ObjectProperty ;
+    rdfs:domain sioc:UserAccount ;
+    rdfs:range assembl:AssemblySpace .
+
+assembl:forum_moderator_of a owl:ObjectProperty ;
+    rdfs:subPropertyOf sioc:moderator_of;
+   	owl:propertyChain (
+    	assembl:moderator_of
+     	assembl:has_forum
+    ).
+
+assembl:Vote a owl:Class.
+
+assembl:voter a owl:FunctionalProperty;
+	rdfs:domain assembl:Vote;
+	rdfs:range sioc:UserAccount.
+
+assembl:vote_on a owl:FunctionalProperty;
+	rdfs:domain assembl:Vote;
+	rdfs:range assembl:Concept.
+
+assembl:VoteValence a owl:Class;
+	rdfs:subClassOf skos:Concept .
+
+assembl:has_valence a owl:FunctionalProperty;
+	rdfs:domain assembl:Vote;
+	rdfs:range assembl:VoteValence .
