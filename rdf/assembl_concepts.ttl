@@ -1,3 +1,5 @@
+# baseURI: http://assembl.net/ns/concepts/
+@prefix assemblc: <http://assembl.net/ns/concepts/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -12,7 +14,12 @@
 @prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
 @prefix aif: <http://www.arg.dundee.ac.uk/aif#> .
 @prefix assembl: <http://assembl.net/ns/core/> .
-@prefix assemblc: <http://assembl.net/ns/concepts/> .
+
+
+<http://assembl.net/ns/concepts/>
+    dcterms:description """Base concepts for a debate."""@en ;
+    dcterms:title "Assembl Concept Ontology Namespace"@en ;
+    a owl:Ontology, owl:Thing .
 
 assemblc:Situation a owl:Class;
 	rdfs:subClassOf assembl:Concept, dul:Situation.

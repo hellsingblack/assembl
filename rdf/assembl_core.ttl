@@ -1,3 +1,4 @@
+# baseURI: http://assembl.net/ns/core/
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -20,52 +21,50 @@
 
 # from foaf
 
-foaf:Agent a owl:Class .
-foaf:Document a owl:Class .
-foaf:OnlineAccount a owl:Class .
-foaf:Project a owl:Class .
-foaf:Person a owl:Class ; 
-	rdfs:subClassOf <http://www.w3.org/2000/10/swap/pim/contact#Person>,
-	<http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing>,
-	foaf:Agent .
-foaf:Group a owl:Class ; rdfs:subClassOf foaf:Agent .
-foaf:account a owl:ObjectProperty .
-foaf:depiction a owl:ObjectProperty .
-foaf:topic a owl:ObjectProperty ;
-    rdfs:domain foaf:Document ;
-    rdfs:range owl:Thing ;
-    owl:inverseOf foaf:page .
-foaf:primaryTopic a owl:FunctionalProperty;
-    rdfs:domain foaf:Document ;
-    rdfs:range owl:Thing.
+# foaf:Agent a owl:Class .
+# foaf:Document a owl:Class .
+# foaf:OnlineAccount a owl:Class .
+# foaf:Project a owl:Class .
+# foaf:Person a owl:Class ; 
+# 	rdfs:subClassOf <http://www.w3.org/2000/10/swap/pim/contact#Person>,
+# 	<http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing>,
+# 	foaf:Agent .
+# foaf:Group a owl:Class ; rdfs:subClassOf foaf:Agent .
+# foaf:account a owl:ObjectProperty .
+# foaf:depiction a owl:ObjectProperty .
+# foaf:topic a owl:ObjectProperty ;
+#     rdfs:domain foaf:Document ;
+#     rdfs:range owl:Thing ;
+#     owl:inverseOf foaf:page .
+# foaf:primaryTopic a owl:FunctionalProperty;
+#     rdfs:domain foaf:Document ;
+#     rdfs:range owl:Thing.
 
 # from SiOC
 
-sioc:Community a owl:Class .
-sioc:Container a owl:Class .
-sioc:Forum a owl:Class ; rdfs:subClassOf sioc:Container .
-sioc:Item a owl:Class .
-sioc:Post a owl:Class ; rdfs:subClassOf sioc:Item, foaf:Document .
-sioc:Role a owl:Class .
-sioc:Site a owl:Class ; rdfs:subClassOf sioc:Space .
-sioc:Space a owl:Class .
-sioc:Thread a owl:Class ; rdfs:subClassOf sioc:Container .
-sioc:UserAccount a owl:Class ; rdfs:subClassOf foaf:OnlineAccount .
-sioc:Usergroup a owl:Class .
+#sioc:Community a owl:Class .
+#sioc:Container a owl:Class .
+#sioc:Forum a owl:Class ; rdfs:subClassOf sioc:Container .
+#sioc:Item a owl:Class .
+#sioc:Post a owl:Class ; rdfs:subClassOf sioc:Item, foaf:Document .
+#sioc:Role a owl:Class .
+#sioc:Site a owl:Class ; rdfs:subClassOf sioc:Space .
+#sioc:Space a owl:Class .
+#sioc:Thread a owl:Class ; rdfs:subClassOf sioc:Container .
+#sioc:UserAccount a owl:Class ; rdfs:subClassOf foaf:OnlineAccount .
+#sioc:Usergroup a owl:Class .
 
-sioc:embeds_knowledge
-    a owl:ObjectProperty ;
-    rdfs:domain sioc:Item ;
-    rdfs:range graph:Graph .
+#sioc:embeds_knowledge
+#    a owl:ObjectProperty ;
+#    rdfs:domain sioc:Item ;
+#    rdfs:range graph:Graph .
 
 # assembl starts here
 
-<http://assembl.net/ns/excerpts/>
+<http://assembl.net/ns/core/>
     dcterms:description """Notion of assembly, with its phases and forums. Documents, excerpts and concepts."""@en ;
     dcterms:title "Assembl Core Ontology Namespace"@en ;
-    a owl:Ontology, owl:Thing ;
-    rdfs:seeAlso <http://rdfs.org/sioc/spec> ;
-    owl:versionInfo "Revision: 1.35" .
+    a owl:Ontology, owl:Thing .
 
 
 assembl:Document a owl:Class;
