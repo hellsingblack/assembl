@@ -1,0 +1,205 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://cohere.open.ac.uk/ontology/cohere.owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+<http://cohere.open.ac.uk/ontology/cohere.owl>
+    a owl:Ontology .
+
+:abstract_idea
+    a owl:Class ;
+    rdfs:comment "Ideas can exist independently or in connection to other ideas, and are what we use to make connections. Notice that 'abstract_idea' here can also include composite ideas, i.e. sets of connections or one single connection used as a node in an argument. By doing so we can support, for example, Dung's abstract argumentation framework."^^xsd:string ;
+    rdfs:subClassOf :abstract_object ;
+    owl:disjointWith :connection_label, :role .
+
+:abstract_object
+    a owl:Class ;
+    rdfs:comment "Non-material entities we create and discuss about in Cohere"^^xsd:string ;
+    rdfs:subClassOf :cohere_thing ;
+    owl:disjointWith :cohere_user, :document .
+
+:cohere_thing
+    a owl:Class ;
+    rdfs:comment "Metaclass to group all the entities in the Cohere world. We decided to include it in the ontology for being able to specify some properties at this 'meta' level (i.e. properties that apply to all Cohere entities: has_description and has_name)."^^xsd:string .
+
+:cohere_user
+    a owl:Class ;
+    rdfs:comment """A person. In the future, we can describe also other kinds of agents, such as groups or organizations.
+Maps to FOAF:PERSON"""^^xsd:string ;
+    rdfs:subClassOf :cohere_thing ;
+    owl:disjointWith :abstract_object, :document .
+
+:connection
+    a owl:Class ;
+    rdfs:comment "A connection of two abstract_ideas through a relation. Since a connection is itself an abstract_ideas, the connection can also link two connections, or one connection with a node (= a simple idea) . in other words, a connection can be used as a node in a new connection. At the moment, we only provide support for representing binary connections only (two nodes only). Moreover, when a connection is instantiated, it is also possible to define the node_types of the two ideas which are connected. The node_types are also called the 'roles' or 'contexts' of the ideas."^^xsd:string ;
+    rdfs:subClassOf :abstract_idea .
+
+:connection_label
+    a owl:Class ;
+    rdfs:comment "The link that connects two nodes in a connection object. Notice that links or labels can be classified by means of 'roles' of labels (see Connection_label_role class). For example, a label could be 'supports' and its role could be a 'positive_label_role'."^^xsd:string ;
+    rdfs:subClassOf :abstract_object ;
+    owl:disjointWith :abstract_idea, :role .
+
+:connection_label_role
+    a owl:Class ;
+    rdfs:comment "The roles (or types) used for organizing the labels between ideas: e.g. supports, contrasts, is-example-of etc... It is important to remember that its subclasses must be disjoint - this is one of the reasons why we decided to use OWL, as RDFS would not let us specify this feature."^^xsd:string ;
+    rdfs:subClassOf :role .
+
+:connection_node_role
+    a owl:Class ;
+    rdfs:comment "It is the contextual information associated with the idea in a connection: we can also refer to it as the 'role' of the idea in that connection. For example, it can be an 'answer', a 'conclusion', an 'idea', an 'experiment' etc. Cohere suggests some predefined roles, but users can also create new roles for their ideas."^^xsd:string ;
+    rdfs:subClassOf :role .
+
+:document
+    a owl:Class ;
+    rdfs:comment """We do not (currently) distinguish precisely between physical and electronic documents, or between copies of a work and the abstraction those copies embody. The has_url property is defined at this level, even if it would apply to web-documents only. The hierarchy can be refined in the future.
+This class maps to FOAF:DOCUMENT"""^^xsd:string ;
+    rdfs:subClassOf :cohere_thing ;
+    owl:disjointWith :abstract_object, :cohere_user .
+
+:has_creation_date
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :abstract_object ;
+    rdfs:range xsd:dateTime .
+
+:has_creator
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:domain :abstract_object ;
+    rdfs:range :cohere_user .
+
+:has_depiction
+    a owl:ObjectProperty ;
+    rdfs:domain :cohere_user ;
+    rdfs:range :image .
+
+:has_description
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :cohere_thing ;
+    rdfs:range xsd:string .
+
+:has_email_address
+    a owl:DatatypeProperty ;
+    rdfs:domain :cohere_user ;
+    rdfs:range xsd:string .
+
+:has_from_node
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:domain :connection ;
+    rdfs:range :abstract_idea .
+
+:has_from_node_role
+    a owl:ObjectProperty ;
+    rdfs:domain :connection ;
+    rdfs:range :connection_node_role .
+
+:has_homepage
+    a owl:ObjectProperty ;
+    rdfs:domain :cohere_user ;
+    rdfs:range :website .
+
+:has_image
+    a owl:ObjectProperty ;
+    rdfs:domain :abstract_idea ;
+    rdfs:range :image .
+
+:has_label
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:domain :connection ;
+    rdfs:range :connection_label .
+
+:has_label_role
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:domain :connection_label ;
+    rdfs:range :connection_label_role .
+
+:has_modification_date
+    a owl:DatatypeProperty ;
+    rdfs:domain :abstract_object ;
+    rdfs:range xsd:dateTime .
+
+:has_name
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :cohere_thing ;
+    rdfs:range xsd:string .
+
+:has_screenshot
+    a owl:ObjectProperty ;
+    rdfs:domain :website ;
+    rdfs:range :image .
+
+:has_thumbnail
+    a owl:ObjectProperty ;
+    rdfs:domain :cohere_user ;
+    rdfs:range :image .
+
+:has_thumbnail_image
+    a owl:ObjectProperty ;
+    rdfs:domain :abstract_idea ;
+    rdfs:range :image .
+
+:has_to_node
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:domain :connection ;
+    rdfs:range :abstract_idea .
+
+:has_to_node_role
+    a owl:ObjectProperty ;
+    rdfs:domain :connection ;
+    rdfs:range :connection_node_role .
+
+:has_url
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :document ;
+    rdfs:range xsd:string .
+
+:has_website
+    a owl:ObjectProperty ;
+    rdfs:domain :abstract_idea ;
+    rdfs:range :website .
+
+:image
+    a owl:Class ;
+    rdfs:comment "An image we can associate to an idea, or to a person"^^xsd:string ;
+    rdfs:subClassOf :document .
+
+:includes_idea
+    a owl:ObjectProperty ;
+    rdfs:domain :set ;
+    rdfs:range :abstract_idea .
+
+:negative_label_role
+    a :connection_label_role .
+
+:neutral_label_role
+    a :connection_label_role .
+
+:node
+    a owl:Class ;
+    rdfs:comment "Instances of nodes (previously called also 'simple' ideas) are the nodes of a connection  without the 'context' information. Basically, they are the isolated bubbles we can see in Cohere."^^xsd:string ;
+    rdfs:subClassOf :abstract_idea .
+
+:positive_label_role
+    :has_creation_date "2008-03-13T00:00:00"^^xsd:dateTime ;
+    a :connection_label_role .
+
+:role
+    a owl:Class ;
+    rdfs:comment "Abstract class grouping things representing the role of nodes within a connection and the roles of label connecting ideas in. (it was previously named 'type')"^^xsd:string ;
+    rdfs:subClassOf :abstract_object ;
+    owl:disjointWith :abstract_idea, :connection_label .
+
+:set
+    a owl:Class ;
+    rdfs:comment "This class serves as the basic mean to create abstractions within Cohere. By creating a set it is possible to have any arbitrary aggregation of connections, nodes or sets themselves into a new abstract_idea. In other words, the resulting set is itself an idea that can be connected into a new argument."^^xsd:string ;
+    rdfs:subClassOf :abstract_idea .
+
+:uses_aif_scheme_type
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "This property is specified at this level only for documentation purposes: in a more precise implementation, there would be specific properties for each subclass of AIF-scheme_node, linking them respectively and exclusively to one AIF-scheme_type"^^xsd:string .
+
+:website
+    a owl:Class ;
+    rdfs:comment "Self explanatory"^^xsd:string ;
+    rdfs:subClassOf :document .
+

@@ -1,0 +1,4002 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2002/07/owl#> .
+@prefix www: <http://www.ArgOWL.org#> .
+@prefix http: <http://> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix aif: <http://www.arg.dundee.ac.uk/aif#> .
+
+<http://www.arg.dundee.ac.uk/aif>
+    www:createdBy "Floris Bex"^^xsd:string ;
+    a :Ontology ;
+    rdfs:comment "A number of argumentation schemes are taken from Bita Banihashemi and Iyad Rahwan's previous version of the AIF ontology."^^xsd:string, "The AIF Ontology. "^^xsd:string ;
+    :versionInfo "version 1.0" .
+
+aif:AcceptBadCase_Desc
+    aif:formDescription "Having to accept case Cn as a precedent, or as a recgnized exception to R would be intolerable (horrid, bad)" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:AcceptBadCase_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:AcceptableAction_Desc
+    aif:formDescription "A is an acceptable action" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:AcceptableAction_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:AcceptableCase_Desc
+    aif:formDescription "Case C0 is tentatively acceptable as an initial presumption " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:AcceptableCase_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:AcceptableOpinion_Desc
+    aif:formDescription "if a contends A, A should be accepted as more (less) plausible" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:AcceptableOpinion_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:AdequateSearch_Desc
+    aif:formDescription "The search for knowledge found is adequately compelete."^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:AdequateSearch_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:AlternativeMeans_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:AlternativeMeans_Statement ;
+                :onProperty aif:hasAlternativeMeans_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:PracticalReasoning_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:AlternativeMeans_Desc
+    aif:formDescription "There are alternative means other than B."^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:AlternativeMeans_Scheme
+    aif:hasConflictedElement_Desc aif:PracticalReasoning_Scheme ;
+    aif:hasConflictingElement_Desc aif:AlternativeMeans_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:AlternativeMeans_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Analogy_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasDifferencesUndermineSimilarity_Exception ;
+                :someValuesFrom aif:DifferencesUndermineSimilarity_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasExceptionSimilarityCase_Exception ;
+                :someValuesFrom aif:ExceptionSimilarityCase_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:CaseOutcome_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasPrecedent_Premise ;
+                :someValuesFrom aif:Precedent_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasSimilarityOfCases_Premise ;
+                :someValuesFrom aif:SimilarityOfCases_Statement
+            ]
+        )
+    ] .
+
+aif:Analogy_Scheme
+    aif:hasConclusion_Desc aif:CaseOutcome_Desc ;
+    aif:hasException_Desc aif:DifferencesUndermineSimilarity_Desc, aif:ExceptionSimilarityCase_Desc ;
+    aif:hasPremise_Desc aif:Precedent_Desc, aif:SimilarityOfCases_Desc ;
+    aif:schemeName "Scheme for Argument from Analogy" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:ArbitraryConditional_Desc
+    aif:formDescription "If an argument A occurs in a context of dialogue that requires a nonarbitrary definition for a key property F that occurs in A, and F is defined in an arbitrary way in A, then A ought to be rejected as deficient. " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ArbitraryConditional_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ArbitraryDefinition_Desc
+    aif:formDescription """Some property F that occurs in argument A is defined in a way that is
+arbitrary""" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ArbitraryDefinition_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ArbitraryVerbalClassification_Inference
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasArbitraryConditional_Premise ;
+                :someValuesFrom aif:ArbitraryConditional_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasArbitraryDefinition_Premise ;
+                :someValuesFrom aif:ArbitraryDefinition_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:RejectedArgument_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasNonarbitraryNeeded_Premise ;
+                :someValuesFrom aif:NonarbitraryNeeded_Statement
+            ]
+        )
+    ] .
+
+aif:ArbitraryVerbalClassification_Scheme
+    aif:hasConclusion_Desc aif:RejectedArgument_Desc ;
+    aif:hasPremise_Desc aif:ArbitraryConditional_Desc, aif:ArbitraryDefinition_Desc, aif:NonarbitraryNeeded_Desc ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:AssumedKnowledge_Desc
+    aif:formDescription "A is false(true)"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:AssumedKnowledge_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:BadChainConsequence_Desc
+    aif:formDescription "The penultimate step C(n-1) leads to a horrible outcome, Cn, which is not acceptable. " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:BadConsequence_Desc
+    aif:formDescription "If A is brought about, bad consequences will plausibly occur"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:BadConsequence_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement ;
+    :equivalentClass aif:BadOtherConsequence_Statement .
+
+aif:BadOtherConsequence_Desc
+    aif:formDescription "If C is brought about, bad consequences (D) will plausibly occur"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:BadOtherConsequence_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:BiasConclusion_Desc
+    aif:formDescription "It is less likely that a has taken the evidence on both sides of the issue into account" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:BiasConclusion_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:BiasConditional_Desc
+    aif:formDescription "If an arguer x is biased, then it is less likely that x has taken the evidence on both sides of an issue into account in arriving at conclusion A" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:BiasConditional_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Bias_Inference
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasBiasConditional_Premise ;
+                :someValuesFrom aif:BiasConditional_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasBiasedPerson_Premise ;
+                :someValuesFrom aif:BiasedPerson_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:BiasConclusion_Statement
+            ]
+        )
+    ] .
+
+aif:Bias_Scheme
+    aif:hasConclusion_Desc aif:BiasConclusion_Desc ;
+    aif:hasPremise_Desc aif:BiasConditional_Desc, aif:BiasedPerson_Desc ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:BiasedClassificationDefinition_Desc
+    aif:formDescription "The Verbal Classification is based on a stipulative or biased definition that is subject to doubt"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:BiasedClassificationDefinition_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:BiasedClassification_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:BiasedClassificationDefinition_Statement ;
+                :onProperty aif:hasBiasedClassificationDefinition_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:VerbalClassification_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:BiasedClassification_Scheme
+    aif:hasConflictedElement_Desc aif:VerbalClassification_Scheme ;
+    aif:hasConflictingElement_Desc aif:BiasedClassificationDefinition_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:BiasedPerson_Desc
+    aif:formDescription "Arguer a is biased" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:BiasedPerson_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:CA-node
+    a :Class ;
+    rdfs:subClassOf aif:S-node ;
+    :equivalentClass aif:Conflict .
+
+aif:CaseOutcome_Desc
+    aif:formDescription "A is true (false) in case C2"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:CaseOutcome_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:CaseProperty_Desc
+    aif:formDescription "In this case, the individual a has property F and also property G " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:CaseProperty_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:CausalSlipperySlope_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasRequiredSteps_Exception ;
+                :someValuesFrom aif:RequiredSteps_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasWeakestLink_Exception ;
+                :someValuesFrom aif:WeakestLink_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasChainedBadConsequence_Premise ;
+                :someValuesFrom aif:ChainedBadConsequence_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:ForbiddenAction_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasProposalConsideration_Premise ;
+                :someValuesFrom aif:ProposalConsideration_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasRecursiveAction_Premise ;
+                :someValuesFrom aif:RecursiveAction_Statement
+            ]
+        )
+    ] .
+
+aif:CausalSlipperySlope_Scheme
+    aif:hasConclusion_Desc aif:ForbiddenAction_Desc ;
+    aif:hasException_Desc aif:RequiredSteps_Desc, aif:WeakestLink_Desc ;
+    aif:hasPremise_Desc aif:ChainedBadConsequence_Desc, aif:ProposalConsideration_Desc, aif:RecursiveAction_Desc ;
+    aif:schemeName "Scheme for Slippery Slope Argument" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:Causal_Desc
+    aif:formDescription "A causes B"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:Causal_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:CauseToEffect_Inference
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasCausal_Premise ;
+                :someValuesFrom aif:Causal_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:OccurenceB_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasOccurenceA_Premise ;
+                :someValuesFrom aif:OccurenceA_Statement
+            ]
+        )
+    ] .
+
+aif:CauseToEffect_Scheme
+    aif:hasConclusion_Desc aif:OccurenceB_Desc ;
+    aif:hasPremise_Desc aif:Causal_Desc, aif:OccurenceA_Desc ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:ChainRequired_Desc
+    aif:formDescription "The conditional 'If A then C' is not, by itself, acceptable (nor are any sequences from A to C shorter than the one specified in the second premise)" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ChainRequired_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ChainedBadConsequence_Desc
+    aif:formDescription "If A0 to An-1 are brought about, An which  is a horrible (disastrous, bad) outcome will plausibly occur"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ChainedBadConsequence_Statement
+    a :Class ;
+    rdfs:subClassOf aif:BadConsequence_Statement .
+
+aif:ChainedCases_Desc
+    aif:formDescription "There exists a series of cases, C0, C1, ..., C(n-1), where each case leads to the next by a combination of causal precedent, and/or analogy steps. " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ChainedCases_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ChainedImplications_Desc
+    aif:formDescription "There is an intervening sequence of propositions, B1, B2, ..., Bn-1, Bn, C, such that the following conditionals are true: If A then B1; If B1 then B2; ...; If Bn-1 then Bn; If Bn then C" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ChainedImplications_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ChainedIndistinguishable_Desc
+    aif:formDescription "For any given pair {ai, aj} of adjacent individuals in the sequence a1, a2, ..., an, individual aj is indistinguishable from ai with respect to F " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ChainedIndistinguishable_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:CharacterAttack_Desc
+    aif:formDescription "a is a person of bad character"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:CharacterAttack_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:CharacterRelevance_Desc
+    aif:formDescription "Issue of character is relevant in the type of dialouge in which the argument was used"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:CharacterRelevance_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:CircumstantialAdHominem_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Restriction ;
+        :onProperty aif:hasResolvingInconsistency_Exception ;
+        :someValuesFrom aif:ResolvingInconsistency_Statement
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:RejectedArgument_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasInitialCommitment_Premise ;
+                :someValuesFrom aif:InitialCommitment_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasOpposedCommitment_Premise ;
+                :someValuesFrom aif:OpposedCommitment_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasQuestionedCredibility_Premise ;
+                :someValuesFrom aif:QuestionedCredibility_Statement
+            ]
+        )
+    ] .
+
+aif:CircumstantialAdHominem_Scheme
+    aif:hasConclusion_Desc aif:RejectedArgument_Desc ;
+    aif:hasException_Desc aif:ResolvingInconsistency_Desc ;
+    aif:hasPremise_Desc aif:InitialCommitment_Desc, aif:OpposedCommitment_Desc, aif:QuestionedCredibility_Desc ;
+    aif:schemeName "Scheme for Circumstantial Ad Hominem Argument" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:ClassificationProperty_Desc
+    aif:formDescription "For all x, if x has property F, then x can be classified as having property G"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ClassificationProperty_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:CommitmentEvidence_Desc
+    aif:formDescription "In this case it was shown that a is committed to proposition A, according to the evidence of what he said or did"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:CommitmentEvidence_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:CommitmentException_Desc
+    aif:formDescription "Commitment to A does not imply commitment to B"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:CommitmentException_Scheme
+    aif:hasConflictedElement_Desc aif:Commitment_Scheme ;
+    aif:hasConflictingElement aif:CommitmentException_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:CommitmentException_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:CommitmentInconsistency_Desc
+    aif:formDescription "commitments of a are inconsistent."^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:CommitmentInconsistency_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:CommitmentLinkage_Desc
+    aif:formDescription "Generally, when an arguer is committed to A, it can be inferred that he is also committed to B."^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:CommitmentLinkage_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Commitment_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:CommitmentException_Statement ;
+                :onProperty aif:hasCommitmentException_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:Commitment_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:Commitment_Desc
+    aif:formDescription "In this case, a is committed to B"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:Commitment_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasCommitmentException_Exception ;
+                :someValuesFrom aif:CommitmentException_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasOpposedCommitment_Exception ;
+                :someValuesFrom aif:OpposedCommitment_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasCommitmentEvidence_Premise ;
+                :someValuesFrom aif:CommitmentEvidence_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasCommitmentLinkage_Premise ;
+                :someValuesFrom aif:CommitmentLinkage_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:Commitment_Statement
+            ]
+        )
+    ] .
+
+aif:Commitment_Scheme
+    aif:hasConclusion_Desc aif:Commitment_Desc ;
+    aif:hasConflictedElement_Desc aif:Commitment_Scheme ;
+    aif:hasConflictingElement_Desc aif:CommitmentException_Desc ;
+    aif:hasException_Desc aif:CommitmentException_Desc, aif:OpposedCommitment_Desc ;
+    aif:hasPremise_Desc aif:CommitmentEvidence_Desc, aif:CommitmentLinkage_Desc ;
+    aif:schemeName "Scheme for Argument from Commitment" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:Commitment_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:CommonKnowledgeBackUp_Desc
+    aif:formDescription "Evidence such as poll or appeal to common knowledge supports that A is generally accepted as true."^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:CommonKnowledgeBackUp_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Conflict
+    a :Class ;
+    rdfs:subClassOf aif:Scheme_Application, [
+        a :Restriction ;
+        :onClass aif:Statement ;
+        :onProperty aif:hasConflictingElement ;
+        :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+    ], [
+        a :Restriction ;
+        :onProperty aif:fulfils ;
+        :someValuesFrom aif:Conflict_Scheme
+    ], [
+        a :Restriction ;
+        :onClass [
+            a :Class ;
+            :unionOf (aif:Scheme_Application
+                aif:Statement
+            )
+        ] ;
+        :onProperty aif:hasConflictedElement ;
+        :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+    ] .
+
+aif:Conflict_Scheme
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf (aif:Scheme
+            [
+                a :Restriction ;
+                :onClass [
+                    a :Class ;
+                    :unionOf (aif:Scheme
+                        aif:Statement_Description
+                    )
+                ] ;
+                :onProperty aif:hasConflictedElement_Desc ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:Statement_Description ;
+                :onProperty aif:hasConflictingElement_Desc ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:ConflictingGoals_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:PracticalReasoning_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:ConflictingGoals_Statement ;
+                :onProperty aif:hasConflictingGoals_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:ConflictingGoals_Desc
+    aif:formDescription "There are other golas that conflict with A"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ConflictingGoals_Scheme
+    aif:hasConflictedElement_Desc aif:PracticalReasoning_Scheme ;
+    aif:hasConflictingElement_Desc aif:ConflictingGoals_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:ConflictingGoals_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ConsequenceBackUpEvidence_Desc
+    aif:formDescription "There is evidence that supports the claim that these consequences will occur if A is brought about."^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ConsequenceBackUpEvidence_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ContainsProperty_Desc
+    aif:formDescription "A has property F"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ContainsProperty_Statement
+    a :Class ;
+    rdfs:comment "Main"^^xsd:string ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ContinueAction_Desc
+    aif:formDescription "a ought to continue trying to realize A" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ContinueAction_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:CorrelationToCause_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasLackOfCoincidence_Presumption ;
+                :someValuesFrom aif:LackOfCoincidence_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasOtherCausalFactorsInvolved_Exception ;
+                :someValuesFrom aif:OtherCausalFactorsInvolved_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:Causal_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasCorrelation_Premise ;
+                :someValuesFrom aif:Correlation_Statement
+            ]
+        )
+    ] .
+
+aif:CorrelationToCause_Scheme
+    aif:hasConclusion_Desc aif:Causal_Desc ;
+    aif:hasException_Desc aif:OtherCausalFactorsInvolved_Desc ;
+    aif:hasPremise_Desc aif:Correlation_Desc ;
+    aif:hasPresumption_Desc aif:LackOfCoincidence_Desc ;
+    aif:schemeName "Scheme for Argument from Correlation to Cause" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:Correlation_Desc
+    aif:formDescription "There is a positive correlation between A and B"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:Correlation_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:CredibilityOfSource_Desc
+    aif:formDescription "E is a credible expert source"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:CredibilityOfSource_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:CredibleThreat_Desc
+    aif:formDescription "Credible Threat Statement"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:CredibleThreat_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:DeductiveInference_Scheme
+    a :Class ;
+    rdfs:subClassOf aif:Inference_Scheme .
+
+aif:Deductive_Inference
+    a :Class ;
+    rdfs:subClassOf aif:Inference .
+
+aif:DialogueScheme_Application
+    a :Class ;
+    rdfs:subClassOf aif:Scheme_Application .
+
+aif:Dialogue_Scheme
+    a :Class ;
+    rdfs:subClassOf aif:Scheme .
+
+aif:DifferencesUndermineSimilarity_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:Analogy_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:DifferencesUndermineSimilarity_Statement ;
+                :onProperty aif:hasDifferencesUndermineSimilarity_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:DifferencesUndermineSimilarity_Desc
+    aif:formDescription "Certain differences between C1 and C2 tend to undermine the force of similarity cited"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:DifferencesUndermineSimilarity_Scheme
+    aif:hasConflictedElement_Desc aif:Analogy_Scheme ;
+    aif:hasConflictingElement_Desc aif:DifferencesUndermineSimilarity_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:DifferencesUndermineSimilarity_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Dilemma_Inference
+    aif:schemeName "Scheme for Argument from Dilemma" ;
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasBadConsequence_Premise ;
+                :someValuesFrom aif:BadConsequence_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasBadOtherConsequence_Premise ;
+                :someValuesFrom aif:BadOtherConsequence_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:ForbiddenAlternativeActions_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasDisjuction_Premise ;
+                :someValuesFrom aif:Disjuction_Statement
+            ]
+        )
+    ] .
+
+aif:Dilemma_Scheme
+    aif:hasConclusion_Desc aif:ForbiddenAlternativeActions_Desc ;
+    aif:hasPremise_Desc aif:BadConsequence_Desc, aif:BadOtherConsequence_Desc, aif:Disjuction_Desc ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:DirectAdHominem_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasCharacterRelevance_Presumption ;
+                :someValuesFrom aif:CharacterRelevance_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasGeneralBackUpEvidence_Presumption ;
+                :someValuesFrom aif:GeneralBackUpEvidence_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasCharacterAttack_Premise ;
+                :someValuesFrom aif:CharacterAttack_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:RejectedArgument_Statement
+            ]
+        )
+    ] .
+
+aif:DirectAdHominem_Scheme
+    aif:hasConclusion_Desc aif:RejectedArgument_Desc ;
+    aif:hasPremise_Desc aif:CharacterAttack_Desc ;
+    aif:hasPresumption_Desc aif:CharacterRelevance_Desc, aif:GeneralBackUpEvidence_Desc ;
+    aif:schemeName "Scheme for Direct Ad Hominem Argument" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:DirectThreat_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasCredibleThreat_Presumption ;
+                :someValuesFrom aif:CredibleThreat_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasThreatRelevancy_Presumption ;
+                :someValuesFrom aif:ThreatRelevancy_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasBadConsequence_Premise ;
+                :someValuesFrom aif:BadConsequence_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:ForbiddenAction_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasOppositeAction_Premise ;
+                :someValuesFrom aif:OppositeAction_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasThreatCommitment_Premise ;
+                :someValuesFrom aif:ThreatCommitment_Statement
+            ]
+        )
+    ] .
+
+aif:DirectThreat_Scheme
+    aif:hasConclusion_Desc aif:ForbiddenAction_Desc ;
+    aif:hasPremise_Desc aif:BadConsequence_Desc, aif:OppositeAction_Desc, aif:ThreatCommitment_Desc ;
+    aif:hasPresumption_Desc aif:CredibleThreat_Desc, aif:ThreatRelevancy_Desc ;
+    aif:schemeName "Scheme for Direct Threat Argument" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:Disjuction_Desc
+    aif:formDescription "Either A or C"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:Disjuction_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:EncouragedAction_Desc
+    aif:formDescription "A should be brought about"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:EncouragedAction_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:EstablishedRuleConditional_Desc
+    aif:formDescription "For all x, if doing A is the established rule for x, then (subject to exceptional cases), x must do A (subject to penalty)" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:EstablishedRuleConditional_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:EstablishedRule_Desc
+    aif:formDescription "Doing A is the established rule for a" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:EstablishedRule_Inference
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:ObligedAction_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasEstablishedRuleConditional_Premise ;
+                :someValuesFrom aif:EstablishedRuleConditional_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasEstablishedRule_Premise ;
+                :someValuesFrom aif:EstablishedRule_Statement
+            ]
+        )
+    ] .
+
+aif:EstablishedRule_Scheme
+    aif:hasConclusion_Desc aif:ObligedAction_Desc ;
+    aif:hasPremise_Desc aif:EstablishedRuleConditional_Desc, aif:EstablishedRule_Desc ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:EstablishedRule_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:EthoticConditional_Desc
+    aif:formDescription "If x is a person of good (bad) moral character, then if x contends A, A should be accepted as more (less) plausible" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:EthoticConditional_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Ethotic_Inference
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:AcceptableOpinion_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasEthoticConditional_Premise ;
+                :someValuesFrom aif:EthoticConditional_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasMoralCharacter_Premise ;
+                :someValuesFrom aif:MoralCharacter_Statement
+            ]
+        )
+    ] .
+
+aif:Ethotic_Scheme
+    aif:hasConclusion aif:AcceptableOpinion_Desc ;
+    aif:hasPremise_Desc aif:EthoticConditional_Desc, aif:MoralCharacter_Desc ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:EvidenceToHypothesis_Inference
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:KnowledgePosition_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasEvidential_Premise ;
+                :someValuesFrom aif:Evidential_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasObservation_Premise ;
+                :someValuesFrom aif:Observation_Statement
+            ]
+        )
+    ] .
+
+aif:EvidenceToHypothesis_Scheme
+    aif:hasConclusion_Desc aif:KnowledgePosition_Desc ;
+    aif:hasPremise_Desc aif:Evidential_Desc, aif:Observation_Desc ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:Evidential_Desc
+    aif:formDescription "If hypothesis A is true, then a proposition B, reporting an event, will be observed to be true. " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:Evidential_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Example_Inference
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasCaseProperty_Premise ;
+                :someValuesFrom aif:CaseProperty_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:GeneralProperty_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasTypicalObject_Premise ;
+                :someValuesFrom aif:TypicalObject_Statement
+            ]
+        )
+    ] .
+
+aif:Example_Scheme
+    aif:hasConclusion_Desc aif:GeneralProperty_Desc ;
+    aif:hasPremise_Desc aif:CaseProperty_Desc, aif:TypicalObject_Desc ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:ExceptionSimilarityCase_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:Analogy_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:ExceptionSimilarityCase_Statement ;
+                :onProperty aif:hasExceptionSimilarityCase_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:ExceptionSimilarityCase_Desc
+    aif:formDescription "There exists case C3 that is similar to C1 but in which A is false (true)"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ExceptionSimilarityCase_Scheme
+    aif:hasConflictedElement_Desc aif:Analogy_Scheme ;
+    aif:hasConflictingElement_Desc aif:ExceptionSimilarityCase_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:ExceptionSimilarityCase_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Exception_Conflict
+    a :Class ;
+    rdfs:subClassOf aif:Conflict, [
+        a :Restriction ;
+        :onProperty aif:fulfils ;
+        :someValuesFrom aif:Exception_Scheme
+    ], [
+        a :Restriction ;
+        :onClass aif:Presumptive_Inference ;
+        :onProperty aif:hasConflictedElement ;
+        :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+    ] .
+
+aif:Exception_Scheme
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf (aif:Conflict_Scheme
+            [
+                a :Restriction ;
+                :onClass aif:PresumptiveInference_Scheme ;
+                :onProperty aif:hasConflictedElement_Desc ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:Statement_Description ;
+                :onProperty aif:hasConflictingElement_Desc ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:ExceptionalCaseConditional_Desc
+    aif:formDescription "For all x, if doing A is the established rule for x, then if the case of x is an exception, the rule does not apply to the case of x" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ExceptionalCaseConditional_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ExceptionalCase_Desc
+    aif:formDescription "The case of a is an exception" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ExceptionalCase_Inference
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:NegObligedAction_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasEstablishedRule_Premise ;
+                :someValuesFrom aif:EstablishedRule_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasExceptionalCaseConditional_Premise ;
+                :someValuesFrom aif:ExceptionalCaseConditional_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasExceptionalCase_Premise ;
+                :someValuesFrom aif:ExceptionalCase_Statement
+            ]
+        )
+    ] .
+
+aif:ExceptionalCase_Scheme
+    aif:hasConclusion_Desc aif:NegObligedAction_Desc ;
+    aif:hasPremise_Desc aif:EstablishedRule_Desc, aif:ExceptionalCaseConditional_Desc, aif:ExceptionalCase_Desc ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:ExceptionalCase_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ExistanceOfSign_Desc
+    aif:formDescription "A (a finding) is true in this situation"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ExistanceOfSign_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ExpertOpinion_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasCredibilityOfSource_Presumption ;
+                :someValuesFrom aif:CredibilityOfSource_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasExpertiseBackUpEvidence_Presumption ;
+                :someValuesFrom aif:ExpertiseBackUpEvidence_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasExpertiseInconsistency_Exception ;
+                :someValuesFrom aif:ExpertiseInconsistency_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasLackOfReliability_Exception ;
+                :someValuesFrom aif:LackOfReliability_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:KnowledgePosition_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasFieldExpertise_Premise ;
+                :someValuesFrom aif:FieldExpertise_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasKnowledgeAssertion_Premise ;
+                :someValuesFrom aif:KnowledgeAssertion_Statement
+            ]
+        )
+    ] .
+
+aif:ExpertOpinion_Scheme
+    aif:hasConclusion_Desc aif:KnowledgePosition_Desc ;
+    aif:hasException_Desc aif:ExpertiseInconsistency_Desc, aif:LackOfReliability_Desc ;
+    aif:hasPremise_Desc aif:FieldExpertise_Desc, aif:KnowledgeAssertion_Desc ;
+    aif:hasPresumption_Desc aif:CredibilityOfSource_Desc, aif:ExpertiseBackUpEvidence_Desc ;
+    aif:schemeName "Scheme for Argument from Expert Opinion" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:ExpertiseBackUpEvidence_Desc
+    aif:formDescription "E's assertion is backed up by evidence"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ExpertiseBackUpEvidence_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ExpertiseInconsistency_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:ExpertOpinion_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:ExpertiseInconsistency_Statement ;
+                :onProperty aif:hasExpertiseInconsistency_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:ExpertiseInconsistency_Desc
+    aif:formDescription "A is not consistent with other expert assertions"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ExpertiseInconsistency_Scheme
+    aif:hasConflictedElement_Desc aif:ExpertOpinion_Scheme ;
+    aif:hasConflictingElement_Desc aif:ExpertiseInconsistency_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:ExpertiseInconsistency_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:FalsificationOfHypothesis_Scheme
+    aif:hasConclusion_Desc aif:KnowledgePosition_Desc ;
+    aif:hasPremise_Desc aif:Evidential_Desc, aif:NegObservation_Desc ;
+    a aif:PresumptiveInference_Scheme, :Class, :NamedIndividual ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:KnowledgePosition_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasEvidential_Premise ;
+                :someValuesFrom aif:Evidential_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasNegObservation_Premise ;
+                :someValuesFrom aif:NegObservation_Statement
+            ]
+        )
+    ] .
+
+aif:FearAppeal_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasIrrationalFearAppeal_Exception ;
+                :someValuesFrom aif:IrrationalFearAppeal_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasPreventionOfBadConsequence_Presumption ;
+                :someValuesFrom aif:PreventionOfBadConsequence_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasStrongConsequenceProbability_Presumption ;
+                :someValuesFrom aif:StrongConsequenceProbability_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:ForbiddenAction_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasFearedBadConsequence_Premise ;
+                :someValuesFrom aif:FearedBadConsequence_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasFearfulSituation_Premise ;
+                :someValuesFrom aif:FearfulSituation_Statement
+            ]
+        )
+    ] .
+
+aif:FearAppeal_Scheme
+    aif:hasConclusion_Desc aif:ForbiddenAction_Desc ;
+    aif:hasException_Desc aif:IrrationalFearAppeal_Desc ;
+    aif:hasPremise_Desc aif:FearedBadConsequence_Desc, aif:FearfulSituation_Desc ;
+    aif:hasPresumption_Desc aif:PreventionOfBadConsequence_Desc, aif:StrongConsequenceProbability_Desc ;
+    aif:schemeName "Scheme for Argument from Fear Appeal" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:FearedBadConsequence_Desc
+    aif:formDescription "If you carry out A, then the negative consequences portrayed in this fearful situation will happen to you."^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:FearedBadConsequence_Statement
+    a :Class ;
+    rdfs:subClassOf aif:BadConsequence_Statement .
+
+aif:FearfulSituation_Desc
+    aif:formDescription "Here is a situation that is fearful to you"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:FearfulSituation_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:FieldExpertise_Desc
+    aif:formDescription "Source E is an expert in subject domain D containing proposition A."^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:FieldExpertise_Statement
+    a :Class ;
+    rdfs:subClassOf aif:PositionToHaveKnowledge_Statement .
+
+aif:ForbiddenAction_Desc
+    aif:formDescription "A should not be brought about"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ForbiddenAction_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ForbiddenAlternativeActions_Desc
+    aif:formDescription "Either A or C should not be brought about"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ForbiddenAlternativeActions_Statement
+    a :Class ;
+    rdfs:subClassOf aif:ForbiddenAction_Statement .
+
+aif:ForbiddenCase_Desc
+    aif:formDescription "Admitting case C0, or bringing it forward in the first place, is not a good thing to do " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ForbiddenCase_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Form
+    a :Class .
+
+aif:FullSlipperySlope_Inference
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasAcceptableCase_Premise ;
+                :someValuesFrom aif:AcceptableCase_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasChainedCases_Premise ;
+                :someValuesFrom aif:ChainedCases_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:NegAcceptableCase_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasSocialClimate_Premise ;
+                :someValuesFrom aif:SocialClimate_Statement
+            ]
+        )
+    ] .
+
+aif:FullSlipperySlope_Scheme
+    aif:hasConclusion_Desc aif:NegAcceptableCase_Desc ;
+    aif:hasPremise_Desc aif:AcceptableCase_Desc, aif:ChainedCases_Desc, aif:SocialClimate_Desc ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:GeneralAccepance_Desc
+    aif:formDescription "A is generally accepted as true"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:GeneralAccepance_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:GeneralAcceptanceDoubt_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:PopularOpinion_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:GeneralAcceptanceDoubt_Statement ;
+                :onProperty aif:hasGeneralAcceptanceDoubt_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:GeneralAcceptanceDoubt_Desc
+    aif:formDescription "There are good reasons to doubt A is not true even though it is generally accepted"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:GeneralAcceptanceDoubt_Scheme
+    aif:hasConflictedElement_Desc aif:PopularOpinion_Scheme ;
+    aif:hasConflictingElement_Desc aif:GeneralAcceptanceDoubt_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:GeneralAcceptanceDoubt_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:GeneralBackUpEvidence_Desc
+    aif:formDescription "There is evidence that backs up the claim"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:GeneralBackUpEvidence_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:GeneralProperty_Desc
+    aif:formDescription "Generally, if x has property F then (usually, probably, typically) x also has property G " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:GeneralProperty_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:GoalPlan_Desc
+    aif:formDescription "Brining about B is the way to bring about A"^^xsd:string ;
+    a aif:Statement_Description, :Class, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Goal_Desc
+    aif:formDescription "The Goal is to bring about A"^^xsd:string ;
+    a aif:Statement_Description, :Class, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Gradualism_Inference
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasChainRequired_Premise ;
+                :someValuesFrom aif:ChainRequired_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasChainedImplications_Premise ;
+                :someValuesFrom aif:ChainedImplications_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:KnowledgePosition_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasKnowledgePosition_Premise ;
+                :someValuesFrom aif:KnowledgePosition_Statement
+            ]
+        )
+    ] .
+
+aif:Gradualism_Scheme
+    aif:hasConclusion_Desc aif:KnowledgePosition2_Desc ;
+    aif:hasPremise_Desc aif:ChainRequired_Desc, aif:ChainedImplications_Desc, aif:KnowledgeAssertion_Desc ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:I-node
+    a :Class ;
+    rdfs:comment "I-nodes contain information. They can only be connected through an S-node." ;
+    rdfs:subClassOf aif:Node ;
+    :disjointWith aif:S-node ;
+    :equivalentClass aif:Statement .
+
+aif:Ignorance_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasAdequateSearch_Presumption ;
+                :someValuesFrom aif:AdequateSearch_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasLackOfCompleteKnowledge_Exception ;
+                :someValuesFrom aif:LackOfCompleteKnowledge_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:AssumedKnowledge_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasPopularKnowledge_Premise ;
+                :someValuesFrom aif:PopularKnowledge_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasUnavailabilityOfKnowledge_Premise ;
+                :someValuesFrom aif:UnavailabilityOfKnowledge_Statement
+            ]
+        )
+    ] .
+
+aif:Ignorance_Scheme
+    aif:hasConclusion_Desc aif:AssumedKnowledge_Desc ;
+    aif:hasException_Desc aif:LackOfCompleteKnowledge_Desc ;
+    aif:hasPremise_Desc aif:PopularKnowledge_Desc, aif:UnavailabilityOfKnowledge_Desc ;
+    aif:hasPresumption_Desc aif:AdequateSearch_Desc ;
+    aif:schemeName "Scheme for Plausible Argument from Ignorance" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:Illocution
+    a :Class ;
+    rdfs:subClassOf aif:DialogueScheme_Application ;
+    :equivalentClass aif:YA-node .
+
+aif:Illocutionary_Scheme
+    a :Class ;
+    rdfs:subClassOf aif:Dialogue_Scheme .
+
+aif:InconsistentCommitment_Inference
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:CommitmentInconsistency_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasInitialCommitment_Premise ;
+                :someValuesFrom aif:InitialCommitment_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasOpposedCommitment_Premise ;
+                :someValuesFrom aif:OpposedCommitment_Statement
+            ]
+        )
+    ] .
+
+aif:InconsistentCommitment_Scheme
+    aif:hasConclusion_Desc aif:CommitmentInconsistency_Desc ;
+    aif:hasPremise_Desc aif:InitialCommitment_Desc, aif:OpposedCommitment_Desc ;
+    aif:schemeName "Scheme for Argument from Inconsistent Commitment" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:IndicationBySign_Desc
+    aif:formDescription "B is generally indicated as true when its sign, A, is true"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:IndicationBySign_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:IndirectThreat_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasCredibleThreat_Presumption ;
+                :someValuesFrom aif:CredibleThreat_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasThreatRelevancy_Presumption ;
+                :someValuesFrom aif:ThreatRelevancy_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasBadConsequence_Premise ;
+                :someValuesFrom aif:BadConsequence_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:ForbiddenAction_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasOppositeAction_Premise ;
+                :someValuesFrom aif:OppositeAction_Statement
+            ]
+        )
+    ] .
+
+aif:IndirectThreat_Scheme
+    aif:hasConclusion_Desc aif:ForbiddenAction_Desc ;
+    aif:hasPremise_Desc aif:BadConsequence_Desc, aif:OppositeAction_Desc ;
+    aif:hasPresumption_Desc aif:CredibleThreat_Desc, aif:ThreatRelevancy_Desc ;
+    aif:schemeName "Scheme for Indirect Threat Argument" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:Indistinguishable_Desc
+    aif:formDescription "For all x and y, if x has F then, if y is indistinguishable for x with respect to F, then y also has F  " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:Indistinguishable_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:InductiveInference_Scheme
+    a :Class ;
+    rdfs:subClassOf aif:Inference_Scheme .
+
+aif:Inductive_Inference
+    a :Class ;
+    rdfs:subClassOf aif:Inference .
+
+aif:Inference
+    a :Class ;
+    rdfs:comment "has Exception belongs to Presumptive - Should be considered"^^xsd:string ;
+    rdfs:subClassOf aif:Scheme_Application, [
+        a :Restriction ;
+        :minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+        :onClass aif:Statement ;
+        :onProperty aif:hasPremise
+    ], [
+        a :Restriction ;
+        :onClass [
+            a :Class ;
+            :unionOf (aif:Scheme_Application
+                aif:Statement
+            )
+        ] ;
+        :onProperty aif:hasConclusion ;
+        :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+    ], [
+        a :Restriction ;
+        :onProperty aif:fulfils ;
+        :someValuesFrom aif:Inference_Scheme
+    ] ;
+    :equivalentClass aif:RA-node .
+
+aif:Inference_Scheme
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf (aif:Scheme
+            [
+                a :Restriction ;
+                :minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                :onClass aif:Statement_Description ;
+                :onProperty aif:hasPremise_Desc
+            ]
+            [
+                a :Restriction ;
+                :onClass [
+                    a :Class ;
+                    :unionOf (aif:Scheme
+                        aif:Statement_Description
+                    )
+                ] ;
+                :onProperty aif:hasConclusion_Desc ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:InferredProperty_Desc
+    aif:formDescription "A has property G"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:InferredProperty_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:InitialCommitment_Desc
+    aif:formDescription "a has claimed or indicated that he is committed to proposition A (generally or in virtue of what he said in the past)."^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:InitialCommitment_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:IrrationalFearAppeal_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:FearAppeal_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:IrrationalFearAppeal_Statement ;
+                :onProperty aif:hasIrrationalFearAppeal_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:IrrationalFearAppeal_Desc
+    aif:formDescription "It is an irrational fear that is appealed to."^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:IrrationalFearAppeal_Scheme
+    aif:hasConflictedElement_Desc aif:FearAppeal_Scheme ;
+    aif:hasConflictingElement_Desc aif:IrrationalFearAppeal_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:IrrationalFearAppeal_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:JustificationGround_Desc
+    aif:formDescription "There are grounds for thinking majority are justified in accepting A"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:JustificationGround_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:KnowledgeAssertion_Desc
+    aif:formDescription "E asserts that A is true (false)"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:KnowledgeAssertion_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:KnowledgePosition2_Desc
+    aif:formDescription "C is true (false)" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:KnowledgePosition_Desc
+    aif:formDescription "A is true (false)"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:KnowledgePosition_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:L-node
+    a :Class ;
+    rdfs:subClassOf aif:I-node .
+
+aif:LackOfCoincidence_Desc
+    aif:formDescription "There are reasons to believe that correlation is more than a coincidence"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:LackOfCoincidence_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:LackOfCompleteKnowledge_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:Ignorance_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:LackOfCompleteKnowledge_Statement ;
+                :onProperty aif:hasLackOfCompleteKnowledge_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:LackOfCompleteKnowledge_Desc
+    aif:formDescription "The knowledge is not complete enough to support the argument adequately"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:LackOfCompleteKnowledge_Scheme
+    aif:hasConflictedElement_Desc aif:Ignorance_Scheme ;
+    aif:hasConflictingElement_Desc aif:LackOfCompleteKnowledge_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:LackOfCompleteKnowledge_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:LackOfExpertReliability_Scheme
+    aif:hasConflictedElement_Desc aif:ExpertOpinion_Scheme ;
+    aif:hasConflictingElement_Desc aif:LackOfReliability_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:LackOfPTKReliability_Scheme
+    aif:hasConflictedElement_Desc aif:PositionToKnow_Scheme ;
+    aif:hasConflictingElement_Desc aif:LackOfReliability_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:LackOfReliability_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass [
+                    a :Class ;
+                    :unionOf (aif:ExpertOpinion_Inference
+                        aif:PositionToKnow_Inference
+                    )
+                ] ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:LackOfReliability_Statement ;
+                :onProperty aif:hasLackOfReliability_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:LackOfReliability_Desc
+    aif:formDescription "E is not an honest source"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:LackOfReliability_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Logical_Conflict
+    aif:hasConflictedElement_Desc aif:Proposition_Desc ;
+    aif:hasConflictingElement_Desc aif:PropositionNegation_Desc ;
+    a aif:Conflict_Scheme, :Class, :NamedIndividual ;
+    rdfs:comment "This conflict scheme denotes a conflict between a proposition P and its negation not-P" ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Conflict
+            [
+                a :Restriction ;
+                :onProperty aif:hasConflictedElement ;
+                :someValuesFrom aif:Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConflictingElement ;
+                :someValuesFrom aif:NegStatement
+            ]
+        )
+    ] .
+
+aif:MPconclusion_Desc
+    aif:formDescription "Q"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:MPconclusion_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:MajorPremise_Desc
+    aif:formDescription """P -> Q (If P then Q)
+"""^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:MajorPremise_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:MinorPremise_Desc
+    aif:formDescription "P"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:MinorPremise_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ModusPonens_Inference
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Deductive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:MPconclusion_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasMajorPremise_Premise ;
+                :someValuesFrom aif:MajorPremise_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasMinorPremise_Premise ;
+                :someValuesFrom aif:MinorPremise_Statement
+            ]
+        )
+    ] .
+
+aif:ModusPonens_Scheme
+    aif:hasConclusion_Desc aif:MPconclusion_Desc ;
+    aif:hasPremise_Desc aif:MajorPremise_Desc, aif:MinorPremise_Desc ;
+    a aif:DeductiveInference_Scheme, :NamedIndividual .
+
+aif:MoralCharacter_Desc
+    aif:formDescription "a is a person of good (bad) moral character" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:MoralCharacter_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:NegAcceptableCase_Desc
+    aif:formDescription "C0 is not acceptable " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:NegAcceptableCase_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:NegContainsProperty1_Desc
+    aif:formDescription "an does not have property F " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:NegContainsProperty1_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:NegContainsProperty2_Desc
+    aif:formDescription "It is not the case that A has property F " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:NegContainsProperty2_Statement
+    aif:formDescription "It is not the case that A has property F" ;
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:NegObligedAction_Desc
+    aif:formDescription "a need not do A" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:NegObligedAction_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:NegObservation_Desc
+    aif:claimText "B has been observed to be false in a given instance" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:NegObservation_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:NegStatement
+    a :Class ;
+    rdfs:subClassOf aif:Statement ;
+    :equivalentClass aif:Statement .
+
+aif:NegativeConsequences_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasConsequenceBackUpEvidence_Presumption ;
+                :someValuesFrom aif:ConsequenceBackUpEvidence_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasOppositeConsequences_Exception ;
+                :someValuesFrom aif:OppositeConsequences_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasStrongConsequenceProbability_Presumption ;
+                :someValuesFrom aif:StrongConsequenceProbability_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasBadConsequence_Premise ;
+                :someValuesFrom aif:BadConsequence_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:ForbiddenAction_Statement
+            ]
+        )
+    ] .
+
+aif:NegativeConsequences_Scheme
+    aif:hasConclusion_Desc aif:ForbiddenAction_Desc ;
+    aif:hasException_Desc aif:OppositeConsequences_Desc ;
+    aif:hasPremise_Desc aif:BadConsequence_Desc ;
+    aif:hasPresumption_Desc aif:ConsequenceBackUpEvidence_Desc, aif:StrongConsequenceProbability_Desc ;
+    aif:schemeName "Scheme for Argument from Negative Consequences" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:Node
+    a :Class .
+
+aif:NonarbitraryNeeded_Desc
+    aif:formDescription "Argument A occurs in a context of dialogue that requires a nonarbitrary definition for a key property F that occurs in A" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:NonarbitraryNeeded_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ObligedAction_Desc
+    aif:formDescription "a must do A (subject to penalty)" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ObligedAction_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Observation_Desc
+    aif:formDescription "B has been observed to be true in a given instance " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:Observation_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:OccurenceA_Desc
+    aif:formDescription "In this case, A occurs" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:OccurenceA_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:OccurenceB_Desc
+    aif:formDescription "In this case, B will occur" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:OccurenceB_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:OpposedCommitment_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:Commitment_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:OpposedCommitment_Statement ;
+                :onProperty aif:hasOpposedCommitment_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:OpposedCommitment_Desc
+    aif:formDescription "Other evidence in this particular case shows that a is not really committed to A."^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:OpposedCommitment_Scheme
+    aif:hasConflictedElement_Desc aif:Commitment_Scheme ;
+    aif:hasConflictingElement_Desc aif:OpposedCommitment_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:OpposedCommitment_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:OppositeAction_Desc
+    aif:formDescription "A (Undesired Action) is the converse of C (Desired Action)"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:OppositeAction_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:OppositeConsequencesNC_Scheme
+    aif:hasConflictedElement_Desc aif:NegativeConsequences_Scheme ;
+    aif:hasConflictingElement_Desc aif:OppositeConsequences_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:OppositeConsequencesPC_Scheme
+    aif:hasConflictedElement_Desc aif:PositiveConsequences_Scheme ;
+    aif:hasConflictingElement_Desc aif:OppositeConsequences_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:OppositeConsequencesPr_Scheme
+    aif:hasConflictedElement_Desc aif:PracticalReasoning_Scheme ;
+    aif:hasConflictingElement_Desc aif:OppositeConsequences_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:OppositeConsequences_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass [
+                    a :Class ;
+                    :unionOf (aif:NegativeConsequences_Inference
+                        aif:PositiveConsequences_Inference
+                        aif:PracticalReasoning_Inference
+                    )
+                ] ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:OppositeConsequences_Statement ;
+                :onProperty aif:hasOppositeConsequences_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:OppositeConsequences_Desc
+    aif:formDescription "There are consequences of the opposite value that ought to be taken into account"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:OppositeConsequences_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:OtherCausalFactorsInvolved_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:CorrelationToCause_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:OtherCausalFactorsInvolved_Statement ;
+                :onProperty aif:hasOtherCausalFactorsInvolved_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:OtherCausalFactorsInvolved_Desc
+    aif:formDescription "There is a third factor, C, causing both A and B"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:OtherCausalFactorsInvolved_Scheme
+    aif:hasConflictedElement_Desc aif:CorrelationToCause_Scheme ;
+    aif:hasConflictingElement_Desc aif:OtherCausalFactorsInvolved_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:OtherCausalFactorsInvolved_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:PA-node
+    a :Class ;
+    rdfs:subClassOf aif:S-node ;
+    :equivalentClass aif:Preference .
+
+aif:PopularKnowledge_Desc
+    aif:formDescription "If A were true (false) , it would be known to be true (false)"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:PopularKnowledge_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:PopularOpinion_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasException ;
+                :someValuesFrom aif:GeneralAcceptanceDoubt_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasPresumption ;
+                :someValuesFrom aif:CommonKnowledgeBackUp_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:KnowledgePosition_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasGeneralAccepance_Premise ;
+                :someValuesFrom aif:GeneralAccepance_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasPremise ;
+                :someValuesFrom aif:PresumptionOfGeneralAcceptance_Statement
+            ]
+        )
+    ] .
+
+aif:PopularOpinion_Scheme
+    aif:hasConclusion_Desc aif:KnowledgePosition_Desc ;
+    aif:hasException_Desc aif:GeneralAcceptanceDoubt_Desc ;
+    aif:hasPremise_Desc aif:GeneralAccepance_Desc ;
+    aif:hasPresumption_Desc aif:CommonKnowledgeBackUp_Desc, aif:PresumptionOfGeneralAcceptance_Desc ;
+    aif:schemeName "Scheme for Argument from Popular Opinion" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:PopularPracticeAcceptance_Desc
+    aif:formDescription "If A is a popular practice among those familiar with what is acceptable or not with regard to A, that gives a reason to think that A is acceptable"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:PopularPracticeAcceptance_Statement
+    a :Class ;
+    rdfs:subClassOf aif:PresumptionOfGeneralAcceptance_Statement .
+
+aif:PopularPracticeConditional_Desc
+    aif:formDescription "If A is a popular practice among those familiar with what is acceptable or not with regard to A, that gives a reason to think that A is acceptable"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:PopularPractice_Desc
+    aif:formDescription "A is a popular practice among those who are familiar with what is acceptable or not with regard to A"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:PopularPractice_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasCommonKnowledgeBackUp_Presumption ;
+                :someValuesFrom aif:CommonKnowledgeBackUp_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasJustificationGround_Presumption ;
+                :someValuesFrom aif:JustificationGround_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:AcceptableAction_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasPopularPracticeAcceptance_Premise ;
+                :someValuesFrom aif:PopularPracticeAcceptance_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasPopularPractice_Premise ;
+                :someValuesFrom aif:PopularPractice_Statement
+            ]
+        )
+    ] .
+
+aif:PopularPractice_Scheme
+    aif:hasConclusion_Desc aif:AcceptableAction_Desc ;
+    aif:hasPremise_Desc aif:PopularPracticeConditional_Desc, aif:PopularPractice_Desc ;
+    aif:hasPresumption_Desc aif:CommonKnowledgeBackUp_Desc, aif:JustificationGround_Desc ;
+    aif:schemeName "Scheme for Argument from Popular Practice" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:PopularPractice_Statement
+    a :Class ;
+    rdfs:subClassOf aif:GeneralAccepance_Statement .
+
+aif:PositionToHaveKnowledge_Desc
+    aif:formDescription "E is in a position to know whether A is true or false"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:PositionToHaveKnowledge_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:PositionToKnow_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Restriction ;
+        :onProperty aif:hasLackOfReliability_Exception ;
+        :someValuesFrom aif:LackOfReliability_Statement
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:KnowledgePosition_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasKnowledgeAssertion_Premise ;
+                :someValuesFrom aif:KnowledgeAssertion_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasPositionToHaveKnowledge_Premise ;
+                :someValuesFrom aif:PositionToHaveKnowledge_Statement
+            ]
+        )
+    ] .
+
+aif:PositionToKnow_Scheme
+    aif:hasConclusion_Desc aif:KnowledgePosition_Desc ;
+    aif:hasException_Desc aif:LackOfReliability_Desc ;
+    aif:hasPremise_Desc aif:KnowledgeAssertion_Desc, aif:PositionToHaveKnowledge_Desc ;
+    aif:schemeName "Scheme for Argument from PositionToKnow" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:PositiveConsequence_Desc
+    aif:formDescription "If A is brought about, good consequences will plausibly occur"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:PositiveConsequence_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:PositiveConsequences_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasConsequenceBackUpEvidence_Presumption ;
+                :someValuesFrom aif:ConsequenceBackUpEvidence_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasOppositeConsequences_Exception ;
+                :someValuesFrom aif:OppositeConsequences_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasStrongConsequenceProbability_Presumption ;
+                :someValuesFrom aif:StrongConsequenceProbability_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:EncouragedAction_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasPositiveConsequence_Premise ;
+                :someValuesFrom aif:PositiveConsequence_Statement
+            ]
+        )
+    ] .
+
+aif:PositiveConsequences_Scheme
+    aif:hasConclusion_Desc aif:EncouragedAction_Desc ;
+    aif:hasException_Desc aif:OppositeConsequences_Desc ;
+    aif:hasPremise_Desc aif:PositiveConsequence_Desc ;
+    aif:hasPresumption_Desc aif:ConsequenceBackUpEvidence_Desc, aif:StrongConsequenceProbability_Desc ;
+    aif:schemeName "Scheme for Argument from Positive Consequences" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:PracticalReasoning_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasAlternativeMeans_Exception ;
+                :someValuesFrom aif:AlternativeMeans_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConflictingGoals_Exception ;
+                :someValuesFrom aif:ConflictingGoals_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasOppositeConsequences_Exception ;
+                :someValuesFrom aif:OppositeConsequences_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasRealisticGoal_Presumption ;
+                :someValuesFrom aif:RealisticGoal_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:EncouragedAction_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasGoalPlan_Premise ;
+                :someValuesFrom aif:GoalPlan_Desc
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasGoal_Premise ;
+                :someValuesFrom aif:Goal_Desc
+            ]
+        )
+    ] .
+
+aif:PracticalReasoning_Scheme
+    aif:hasConclusion_Desc aif:EncouragedAction_Desc ;
+    aif:hasException_Desc aif:AlternativeMeans_Desc, aif:ConflictingGoals_Desc, aif:OppositeConsequences_Desc ;
+    aif:hasPremise_Desc aif:GoalPlan_Desc, aif:Goal_Desc ;
+    aif:hasPresumption_Desc aif:RealisticGoal_Desc ;
+    aif:schemeName "Scheme for Practical Reasoning" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:PrecedentSlipperySlope_Inference
+    a :Class ;
+    rdfs:subClassOf aif:Presumptive_Inference ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasAcceptBadCase_Premise ;
+                :someValuesFrom aif:AcceptBadCase_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:ForbiddenCase_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasPrecedent_Premise ;
+                :someValuesFrom aif:Precedent_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasSetPrecedent_Premise ;
+                :someValuesFrom aif:SetPrecedent_Statement
+            ]
+        )
+    ] .
+
+aif:PrecedentSlipperySlope_Scheme
+    aif:hasConclusion_Desc aif:ForbiddenCase_Desc ;
+    aif:hasPremise_Desc aif:AcceptBadCase_Desc, aif:Precedent_Desc, aif:SetPrecedent_Desc ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:Precedent_Desc
+    aif:formDescription "A is true (false) in case C1"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:Precedent_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:PrecisionNeeded_Desc
+    aif:formDescription "Argument A occurs in a context of dialogue that requires a certain level of precision" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:PrecisionNeeded_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Preference
+    a :Class ;
+    rdfs:subClassOf aif:Scheme_Application, [
+        a :Restriction ;
+        :onClass [
+            a :Class ;
+            :unionOf (aif:Scheme_Application
+                aif:Statement
+            )
+        ] ;
+        :onProperty aif:hasPreferredElement ;
+        :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+    ], [
+        a :Restriction ;
+        :onClass [
+            a :Class ;
+            :unionOf (aif:Scheme_Application
+                aif:Statement
+            )
+        ] ;
+        :onProperty aif:hasDispreferredElement ;
+        :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+    ] .
+
+aif:Preference_Scheme
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf (aif:Scheme
+            [
+                a :Restriction ;
+                :onClass [
+                    a :Class ;
+                    :unionOf (aif:Scheme
+                        aif:Statement_Description
+                    )
+                ] ;
+                :onProperty aif:hasDispreferredElement_Desc ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass [
+                    a :Class ;
+                    :unionOf (aif:Scheme
+                        aif:Statement_Description
+                    )
+                ] ;
+                :onProperty aif:hasPreferredElement_Desc ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:PresumedCause_Desc
+    aif:formDescription "B is true in this situation"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:PresumedCause_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:PresumptionOfGeneralAcceptance_Desc
+    aif:formDescription "If A is generally accepted as true, there exists a reason in favour of A"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:PresumptionOfGeneralAcceptance_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:PresumptiveInference_Scheme
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf (aif:Inference_Scheme
+            [
+                a :Restriction ;
+                :allValuesFrom aif:Statement_Description ;
+                :onProperty aif:hasException_Desc
+            ]
+            [
+                a :Restriction ;
+                :allValuesFrom aif:Statement_Description ;
+                :onProperty aif:hasPresumption_Desc
+            ]
+        )
+    ] .
+
+aif:Presumptive_Inference
+    a :Class ;
+    rdfs:subClassOf aif:Inference, [
+        a :Restriction ;
+        :allValuesFrom aif:Statement ;
+        :onProperty aif:hasPresumption
+    ], [
+        a :Restriction ;
+        :allValuesFrom aif:Statement ;
+        :onProperty aif:hasException
+    ] .
+
+aif:PreventionOfBadConsequence_Desc
+    aif:formDescription "If A is not carried out, this will stop the negative consequences from happening"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:PreventionOfBadConsequence_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:PropertyNotExistant_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:VerbalClassification_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:PropertyNotExistant_Statement ;
+                :onProperty aif:hasPropertyNotExistant_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:PropertyNotExistant_Desc
+    aif:formDescription "There is evidence that indicates doubt on whether A definitly has property F."^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:PropertyNotExistant_Scheme
+    aif:hasConflictedElement_Desc aif:VerbalClassification_Scheme ;
+    aif:hasConflictingElement_Desc aif:PropertyNotExistant_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:PropertyNotExistant_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ProposalConsideration_Desc
+    aif:formDescription "A0 is up for consideration as a proposal that seems initially like something that should be brought about"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:ProposalConsideration_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:PropositionNegation_Desc
+    aif:formDescription "~P"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:Proposition_Desc
+    aif:formDescription "P"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:QuestionedCredibility_Desc
+    aif:formDescription "credibility of X as a sincere person who believes in his own argument has been put into question"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:QuestionedCredibility_Statement
+    a :Class ;
+    rdfs:subClassOf aif:CharacterAttack_Statement .
+
+aif:RA-node
+    a :Class ;
+    rdfs:subClassOf aif:S-node .
+
+aif:RealisticGoal_Desc
+    aif:formDescription "A is a realistic goal"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:RealisticGoal_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:RecursiveAction_Desc
+    aif:formDescription "Bringing up A0 would plausibly lead (in the given circumstances, as far as we know) to A1, which would in turn plausibly lead to A2, and so fourth, through the sequence A2,…,An"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual ;
+    rdfs:comment "Main"^^xsd:string .
+
+aif:RecursiveAction_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:RejectedArgument_Desc
+    aif:formDescription "argument of X should not be accepted"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:RejectedArgument_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:RequiredSteps_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:CausalSlipperySlope_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:RequiredSteps_Statement ;
+                :onProperty aif:hasRequiredSteps_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:RequiredSteps_Desc
+    aif:formDescription "Other steps are required to fill in the sequence of events to make it plausible"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:RequiredSteps_Scheme
+    aif:hasConflictedElement_Desc aif:CausalSlipperySlope_Scheme ;
+    aif:hasConflictingElement_Desc aif:RequiredSteps_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:RequiredSteps_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ResInterpretation_Desc
+    aif:formDescription "AA is a reasonable interpretation of A."^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ResInterpretation_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ResolvingInconsistency_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:CircumstantialAdHominem_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:ResolvingInconsistency_Statement ;
+                :onProperty aif:hasResolvingInconsistency_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:ResolvingInconsistency_Desc
+    aif:formDescription "The practical inconsistancy can be resolved by further dialogue."^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ResolvingInconsistency_Scheme
+    aif:hasConflictedElement_Desc aif:CircumstantialAdHominem_Scheme ;
+    aif:hasConflictingElement_Desc aif:ResolvingInconsistency_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:ResolvingInconsistency_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:S-node
+    a :Class ;
+    rdfs:comment "S-nodes specify relations (e.g. conflict, inference, preference) between other nodes. Note that every S-node must be between 2 other nodes, that is, it is impossible to talk about a relation between 2 nodes (an S-node) without specifying these 2 nodes." ;
+    rdfs:subClassOf aif:Node ;
+    :equivalentClass aif:Scheme_Application .
+
+aif:Scheme
+    a :Class ;
+    rdfs:subClassOf aif:Form ;
+    :disjointWith aif:Statement_Description .
+
+aif:Scheme_Application
+    a :Class ;
+    rdfs:subClassOf :Thing, [
+        a :Restriction ;
+        :onProperty aif:fulfils ;
+        :someValuesFrom aif:Scheme
+    ] ;
+    :disjointWith aif:Statement .
+
+aif:SetPrecedent_Desc
+    aif:formDescription "Case C0 would set a precedent with respect to an existing rule R" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:SetPrecedent_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:SignEventCorrelation_Desc
+    aif:formDescription "There is a strong correlation between the sign and the event signified"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:SignEventCorrelation_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:SignFromOtherEvents_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:Sign_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:SignFromOtherEvents_Statement ;
+                :onProperty aif:hasSignFromOtherEvents_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:SignFromOtherEvents_Desc
+    aif:formDescription "There are other events that more reliably account for the sign"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:SignFromOtherEvents_Scheme
+    aif:hasConflictedElement_Desc aif:Sign_Scheme ;
+    aif:hasConflictingElement_Desc aif:SignFromOtherEvents_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:SignFromOtherEvents_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Sign_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasSignEventCorrelation_Presumption ;
+                :someValuesFrom aif:SignEventCorrelation_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasSignFromOtherEvents_Exception ;
+                :someValuesFrom aif:SignFromOtherEvents_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:PresumedCause_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasExistanceOfSign_Premise ;
+                :someValuesFrom aif:ExistanceOfSign_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasIndicationBySign_Premise ;
+                :someValuesFrom aif:IndicationBySign_Statement
+            ]
+        )
+    ] .
+
+aif:Sign_Scheme
+    aif:hasConclusion_Desc aif:PresumedCause_Desc ;
+    aif:hasException_Desc aif:SignFromOtherEvents_Desc ;
+    aif:hasPremise_Desc aif:ExistanceOfSign_Desc, aif:IndicationBySign_Desc ;
+    aif:hasPresumption_Desc aif:SignEventCorrelation_Desc ;
+    aif:schemeName "Scheme for Argument from Sign" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:SimilarityOfCases_Desc
+    aif:formDescription "Generally, case C1 is similar to case C2"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:SimilarityOfCases_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:SocialClimate_Desc
+    aif:formDescription "There is a climate of social opinion that once people come to accept each step as plausible (or as accepted practice), they will then be led to accept the next step. " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:SocialClimate_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Statement
+    a :Class ;
+    rdfs:subClassOf :Thing, [
+        a :Restriction ;
+        :onProperty aif:fulfils ;
+        :someValuesFrom aif:Statement_Description
+    ] .
+
+aif:Statement_Description
+    a :Class ;
+    rdfs:subClassOf aif:Form .
+
+aif:StrongConsequenceProbability_Desc
+    aif:formDescription "There is a strong probability that the cited consequences will occur."^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:StrongConsequenceProbability_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:TA-node
+    a :Class ;
+    rdfs:subClassOf aif:S-node ;
+    :equivalentClass aif:Transition .
+
+aif:ThreatCommitment_Desc
+    aif:formDescription "I commit myself to seeing that B will come about"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ThreatCommitment_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:ThreatRelevancy_Desc
+    aif:formDescription "The threat is relevant"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:ThreatRelevancy_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Transition
+    a :Class ;
+    rdfs:subClassOf aif:DialogueScheme_Application .
+
+aif:Transition_Scheme
+    a :Class ;
+    rdfs:subClassOf aif:Dialogue_Scheme .
+
+aif:TypicalObject_Desc
+    aif:formDescription "a is typical of things that have F and may or may not have G " ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:TypicalObject_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:UnavailabilityOfKnowledge_Desc
+    aif:formDescription "Proposition A is not known to be true (false)"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:UnavailabilityOfKnowledge_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:VagueConditional_Desc
+    aif:formDescription "If an argument A occurs in a context of dialogue that requires a certain level of precision, but some property F that occurs in A is defined in a way that is too vague to meet the requriements of that level of precision, then A ought to be rejected as deficient." ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:VagueConditional_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:VagueProperty_Desc
+    aif:formDescription "Some property F that occurs in argument A is defined in a way that is too vague to meet the requirement of the level of precision appropriate for the context of dialogue in which A occurs" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:VagueProperty_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:VagueVerbalClassification_Inference
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:RejectedArgument_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasPrecisionNeeded_Premise ;
+                :someValuesFrom aif:PrecisionNeeded_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasVagueConditional_Premise ;
+                :someValuesFrom aif:VagueConditional_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasVagueProperty_Premise ;
+                :someValuesFrom aif:VagueProperty_Statement
+            ]
+        )
+    ] .
+
+aif:VagueVerbalClassification_Scheme
+    aif:hasConclusion_Desc aif:RejectedArgument_Desc ;
+    aif:hasPremise_Desc aif:PrecisionNeeded_Desc, aif:VagueProperty_Desc, aif:VagueVerbalClassification_Scheme ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:VerbalClassification_Inference
+    a :Class ;
+    rdfs:subClassOf [
+        a :Class ;
+        :intersectionOf ([
+                a :Restriction ;
+                :onProperty aif:hasException ;
+                :someValuesFrom aif:BiasedClassificationDefinition_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasException ;
+                :someValuesFrom aif:PropertyNotExistant_Statement
+            ]
+        )
+    ] ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasClassificationProperty_Premise ;
+                :someValuesFrom aif:ClassificationProperty_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:InferredProperty_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasContainsProperty_Premise ;
+                :someValuesFrom aif:ContainsProperty_Statement
+            ]
+        )
+    ] .
+
+aif:VerbalClassification_Scheme
+    aif:hasConclusion_Desc aif:InferredProperty_Desc ;
+    aif:hasException_Desc aif:BiasedClassificationDefinition_Desc, aif:PropertyNotExistant_Desc ;
+    aif:hasPremise_Desc aif:ClassificationProperty_Desc, aif:ContainsProperty_Desc ;
+    aif:schemeName "Scheme for Argument from Verbal Classification" ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:VerbalSlipperySlope_Inference
+    a :Class ;
+    rdfs:subClassOf aif:Presumptive_Inference ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasChainedIndistinguishable_Premise ;
+                :someValuesFrom aif:ChainedIndistinguishable_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:NegContainsProperty2_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasContainsProperty_Premise ;
+                :someValuesFrom aif:ContainsProperty_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasIndistinguishable_Premise ;
+                :someValuesFrom aif:Indistinguishable_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasNegContainsProperty1_Premise ;
+                :someValuesFrom aif:NegContainsProperty1_Statement
+            ]
+        )
+    ] .
+
+aif:VerbalSlipperySlope_Scheme
+    aif:hasConclusion_Desc aif:NegContainsProperty2_Desc ;
+    aif:hasPremise_Desc aif:ChainedIndistinguishable_Desc, aif:ContainsProperty_Desc, aif:Indistinguishable_Desc, aif:NegContainsProperty1_Desc ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:WasteBad_Desc
+    aif:formDescription "If all a's previous attempts to realize A are wasted, that would be a bad thing" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:WasteBad_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:WasteStop_Desc
+    aif:formDescription "If a stops trying to realize A now, all a's previous effors to realize A will be wasted" ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:WasteStop_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:Waste_Inference
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Presumptive_Inference
+            [
+                a :Restriction ;
+                :onProperty aif:hasConclusion ;
+                :someValuesFrom aif:ContinueAction_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasWasteBad_Premise ;
+                :someValuesFrom aif:WasteBad_Statement
+            ]
+            [
+                a :Restriction ;
+                :onProperty aif:hasWasteStop_Premise ;
+                :someValuesFrom aif:WasteStop_Statement
+            ]
+        )
+    ] .
+
+aif:Waste_Scheme
+    aif:hasConclusion_Desc aif:ContinueAction_Desc ;
+    aif:hasPremise_Desc aif:WasteBad_Desc, aif:WasteStop_Desc ;
+    a aif:PresumptiveInference_Scheme, :NamedIndividual .
+
+aif:WeakestLink_Conflict
+    a :Class ;
+    :equivalentClass [
+        a :Class ;
+        :intersectionOf (aif:Exception_Conflict
+            [
+                a :Restriction ;
+                :onClass aif:CausalSlipperySlope_Inference ;
+                :onProperty aif:hasConflictedElement ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+            [
+                a :Restriction ;
+                :onClass aif:WeakestLink_Statement ;
+                :onProperty aif:hasWeakestLink_Exception ;
+                :qualifiedCardinality "1"^^xsd:nonNegativeInteger
+            ]
+        )
+    ] .
+
+aif:WeakestLink_Desc
+    aif:formDescription "The weakest link in the sequence show one event may not really lead to another"^^xsd:string ;
+    a aif:Statement_Description, :NamedIndividual .
+
+aif:WeakestLink_Scheme
+    aif:hasConflictedElement_Desc aif:CausalSlipperySlope_Scheme ;
+    aif:hasConflictingElement_Desc aif:WeakestLink_Desc ;
+    a aif:Exception_Scheme, :NamedIndividual .
+
+aif:WeakestLink_Statement
+    a :Class ;
+    rdfs:subClassOf aif:Statement .
+
+aif:YA-node
+    a :Class ;
+    rdfs:subClassOf aif:S-node .
+
+aif:arg1BackupAttack1
+    aif:fulfils aif:Logical_Conflict ;
+    aif:hasConflictedElement aif:arg1negExpertiseBackUpEvidenceStatement ;
+    aif:hasConflictingElement aif:arg1ExpertiseBackUpEvidenceStatement ;
+    a aif:CA-node, aif:Logical_Conflict, :NamedIndividual .
+
+aif:arg1BackupAttack2
+    aif:fulfils aif:Logical_Conflict ;
+    aif:hasConflictedElement aif:arg1ExpertiseBackUpEvidenceStatement ;
+    aif:hasConflictingElement aif:arg1negExpertiseBackUpEvidenceStatement ;
+    a aif:Logical_Conflict, :NamedIndividual .
+
+aif:arg1CredibilityOfSourceStatement
+    aif:claimText "Dr. Phil  is a credible expert source"^^xsd:string ;
+    aif:fulfils aif:CredibilityOfSource_Desc ;
+    a aif:CredibilityOfSource_Statement, aif:I-node, :NamedIndividual .
+
+aif:arg1Exception1CA
+    aif:fulfils aif:LackOfExpertReliability_Scheme ;
+    a aif:CA-node, :NamedIndividual .
+
+aif:arg1ExpertOpinion
+    aif:argTitle "Expert Opinion Argument 1: Dr. Phil and tipping"^^xsd:string ;
+    aif:fulfils aif:ExpertOpinion_Scheme ;
+    aif:hasConclusion aif:arg1KnowledgePositionStatement ;
+    aif:hasExpertiseBackUpEvidence_Presumption aif:arg1ExpertiseBackUpEvidenceStatement ;
+    aif:hasFieldExpertise_Premise aif:arg1FieldExpertiseStatement ;
+    aif:hasKnowledgeAssertion_Premise aif:arg1KnowledgeAssertionStatement ;
+    aif:hasLackOfReliability_Exception aif:arg1LackOfReliabilityStatement ;
+    a aif:ExpertOpinion_Inference, aif:RA-node, :NamedIndividual .
+
+aif:arg1ExpertiseBackUpEvidenceStatement
+    aif:claimText "Dr. Phil's assertion is backed up by evidence"^^xsd:string ;
+    aif:fulfils aif:ExpertiseBackUpEvidence_Desc, aif:PropositionNegation_Desc, aif:Proposition_Desc ;
+    a aif:ExpertiseBackUpEvidence_Statement, aif:I-node, :NamedIndividual .
+
+aif:arg1ExpertiseInconsistencyStatement
+    aif:claimText "The fact that tipping lowers self esteem is not consistent with other expert assertions"^^xsd:string ;
+    aif:fulfils aif:ExpertiseInconsistency_Desc ;
+    a aif:ExpertiseInconsistency_Statement, aif:I-node, :NamedIndividual ;
+    rdfs:comment ""^^xsd:string .
+
+aif:arg1FieldExpertiseStatement
+    aif:claimText "Dr. Phil is an expert in Psychology"^^xsd:string ;
+    aif:fulfils aif:FieldExpertise_Desc ;
+    a aif:FieldExpertise_Statement, aif:I-node, :NamedIndividual .
+
+aif:arg1KnowledgeAssertionStatement
+    aif:claimText "Dr. Phil says that tipping lowers self esteem"^^xsd:string ;
+    aif:fulfils aif:KnowledgeAssertion_Desc ;
+    a aif:I-node, aif:KnowledgeAssertion_Statement, :NamedIndividual .
+
+aif:arg1KnowledgePositionStatement
+    aif:claimText "Tipping lowers self esteem"^^xsd:string ;
+    aif:fulfils aif:KnowledgePosition_Desc ;
+    a aif:I-node, aif:KnowledgePosition_Statement, :NamedIndividual .
+
+aif:arg1LackOfReliabilityStatement
+    aif:claimText "Dr. Phil  is not an honest source"^^xsd:string ;
+    aif:fulfils aif:LackOfReliability_Desc ;
+    a aif:I-node, aif:LackOfReliability_Statement, :NamedIndividual .
+
+aif:arg1negExpertiseBackUpEvidenceStatement
+    aif:claimText "Dr. Phil's assertion is not backed up by evidence"^^xsd:string ;
+    aif:fulfils aif:PropositionNegation_Desc, aif:Proposition_Desc ;
+    a aif:I-node, :NamedIndividual .
+
+aif:arg2ArgAnalogy
+    aif:argTitle "Tipping improves self esteem"^^xsd:string ;
+    aif:fulfils aif:Analogy_Scheme ;
+    aif:hasConclusion aif:arg2CaseOutcomeStatement ;
+    aif:hasPrecedent_Premise aif:arg2PrecedentStatement ;
+    aif:hasSimilarityOfCases_Premise aif:arg2SimilarityOfCasesStatement ;
+    a aif:Analogy_Inference, aif:RA-node, :NamedIndividual .
+
+aif:arg2CaseOutcomeStatement
+    aif:claimText "Tipping improves self-esteem"^^xsd:string ;
+    aif:fulfils aif:CaseOutcome_Desc ;
+    a aif:CaseOutcome_Statement, aif:I-node, :NamedIndividual .
+
+aif:arg2PrecedentStatement
+    aif:claimText "Rewarding improves self esteem"^^xsd:string ;
+    aif:fulfils aif:Precedent_Desc ;
+    a aif:I-node, aif:Precedent_Statement, :NamedIndividual .
+
+aif:arg2SimilarityOfCasesStatement
+    aif:claimText "Generally Tipping is like rewarding"^^xsd:string ;
+    aif:fulfils aif:SimilarityOfCases_Desc ;
+    a aif:I-node, aif:SimilarityOfCases_Statement, :NamedIndividual .
+
+aif:arg3KnowledgeAssertionStatement
+    aif:claimText "Allen says Brazil has the best football team"^^xsd:string ;
+    aif:fulfils aif:KnowledgeAssertion_Desc ;
+    a aif:I-node, aif:KnowledgeAssertion_Statement, :NamedIndividual .
+
+aif:arg3KnowledgePositionStatement
+    aif:claimText "Brazil has the best football team"^^xsd:string ;
+    aif:fulfils aif:KnowledgePosition_Desc ;
+    a aif:I-node, aif:KnowledgePosition_Statement, :NamedIndividual .
+
+aif:arg3LackOfReliabilityStatement
+    aif:claimText "Allen  is not an honest source"^^xsd:string ;
+    aif:fulfils aif:LackOfReliability_Desc ;
+    a aif:I-node, aif:LackOfReliability_Statement, :NamedIndividual .
+
+aif:arg3PosToKnow
+    aif:hasConclusion aif:arg3KnowledgePositionStatement ;
+    aif:hasKnowledgeAssertion_Premise aif:arg3KnowledgeAssertionStatement ;
+    aif:hasLackOfReliability_Exception aif:arg3LackOfReliabilityStatement ;
+    aif:hasPositionToHaveKnowledge_Premise aif:arg3PositionToHaveKnowledgeStatement ;
+    a aif:PositionToKnow_Inference, aif:RA-node, :NamedIndividual .
+
+aif:arg3PositionToHaveKnowledgeStatement
+    aif:claimText "Allen is in position to know about football teams"^^xsd:string ;
+    aif:fulfils aif:PositionToHaveKnowledge_Desc ;
+    a aif:I-node, aif:PositionToHaveKnowledge_Statement, :NamedIndividual .
+
+aif:arg3UnreliableException
+    aif:hasConflictedElement aif:arg3PosToKnow ;
+    aif:hasLackOfReliability_Exception aif:arg3LackOfReliabilityStatement ;
+    a aif:CA-node, aif:Exception_Conflict, :NamedIndividual .
+
+aif:argTitle
+    a :DatatypeProperty ;
+    rdfs:domain aif:Inference, aif:RA-node ;
+    rdfs:range xsd:string .
+
+aif:authorName
+    a :DatatypeProperty ;
+    rdfs:range xsd:string .
+
+aif:claimText
+    a :DatatypeProperty ;
+    rdfs:domain aif:Statement ;
+    rdfs:range xsd:string .
+
+aif:createdBy
+    a :AnnotationProperty, :DatatypeProperty ;
+    rdfs:range xsd:string .
+
+aif:creationDate
+    a :DatatypeProperty ;
+    rdfs:domain aif:Scheme, aif:Scheme_Application ;
+    rdfs:range xsd:date .
+
+aif:formDescription
+    a :AnnotationProperty, :DatatypeProperty ;
+    rdfs:comment "This is the actual text contained in an I-node or Descriptor"^^xsd:string ;
+    rdfs:domain aif:Statement_Description ;
+    rdfs:range xsd:string .
+
+aif:formName
+    a :AnnotationProperty, :DatatypeProperty ;
+    rdfs:range xsd:string .
+
+aif:fulfils
+    a :ObjectProperty ;
+    rdfs:domain aif:Node .
+
+aif:hasAcceptBadCase_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasAcceptableCase_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasAdequateSearch_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasAlternativeMeans_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasArbitraryConditional_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasArbitraryDefinition_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasAuthor
+    a :FunctionalProperty, :ObjectProperty .
+
+aif:hasBadConsequence_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasBadOtherConsequence_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasBiasConditional_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasBiasedClassificationDefinition_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasBiasedPerson_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasCaseProperty_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasCausal_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasChainRequired_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasChainedBadConsequence_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasChainedCases_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasChainedImplications_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasChainedIndistinguishable_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasCharacterAttack_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasCharacterRelevance_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasClassificationProperty_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasCommitmentEvidence_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasCommitmentException_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasCommitmentLinkage_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasCommonKnowledgeBackUp_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasConclusion
+    a :ObjectProperty .
+
+aif:hasConclusion_Desc
+    a :ObjectProperty ;
+    rdfs:domain aif:Inference_Scheme .
+
+aif:hasConflictedElement
+    a :ObjectProperty .
+
+aif:hasConflictedElement_Desc
+    a :ObjectProperty ;
+    rdfs:subPropertyOf :topObjectProperty .
+
+aif:hasConflictingElement
+    a :ObjectProperty .
+
+aif:hasConflictingElement_Desc
+    a :ObjectProperty ;
+    rdfs:subPropertyOf :topObjectProperty .
+
+aif:hasConflictingGoals_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasConsequenceBackUpEvidence_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasContainsProperty_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasCorrelation_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasCredibilityOfSource_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasCredibleThreat_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasDifferencesUndermineSimilarity_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasDisjuction_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasDispreferredElement
+    a :ObjectProperty .
+
+aif:hasDispreferredElement_Desc
+    a :ObjectProperty ;
+    rdfs:domain aif:Preference_Scheme .
+
+aif:hasEstablishedRuleConditional_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasEstablishedRule_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasEthoticConditional_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasEvidential_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasException
+    a :ObjectProperty ;
+    rdfs:comment ""^^xsd:string ;
+    rdfs:subPropertyOf aif:hasConflictingElement .
+
+aif:hasExceptionSimilarityCase_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasException_Desc
+    a :ObjectProperty ;
+    rdfs:comment ""^^xsd:string ;
+    rdfs:domain aif:PresumptiveInference_Scheme ;
+    rdfs:subPropertyOf aif:hasConflictingElement_Desc .
+
+aif:hasExceptionalCaseConditional_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasExceptionalCase_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasExistanceOfSign_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasExpertiseBackUpEvidence_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasExpertiseInconsistency_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasFearedBadConsequence_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasFearfulSituation_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasFieldExpertise_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasGeneralAccepance_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasGeneralAcceptanceDoubt_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasGeneralBackUpEvidence_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasGeneralProperty_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasGoalPlan_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasGoal_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasIndicationBySign_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasIndistinguishable_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasInitialCommitment_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasIrrationalFearAppeal_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasJustificationGround_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasKnowledgeAssertion_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasKnowledgePosition_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasLackOfCoincidence_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasLackOfCompleteKnowledge_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasLackOfReliability_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasMajorPremise_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasMinorPremise_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasMoralCharacter_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasNegContainsProperty1_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasNegObservation_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasNonarbitraryNeeded_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasObservation_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasOccurenceA_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasOpposedCommitment_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasOpposedCommitment_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasOppositeAction_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasOppositeConsequences_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasOtherCausalFactorsInvolved_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasPopularKnowledge_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasPopularPracticeAcceptance_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasPopularPractice_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasPopularpracticeConditional_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasPopularpractice_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasPositionToHaveKnowledge_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasPositiveConsequence_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasPrecedent_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasPrecisionNeeded_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasPreferredElement
+    a :ObjectProperty .
+
+aif:hasPreferredElement_Desc
+    a :ObjectProperty ;
+    rdfs:domain aif:Preference_Scheme .
+
+aif:hasPremise
+    a :ObjectProperty .
+
+aif:hasPremise_Desc
+    a :ObjectProperty ;
+    rdfs:domain aif:Inference_Scheme .
+
+aif:hasPresumption
+    a :ObjectProperty .
+
+aif:hasPresumptionOfGeneralAcceptance_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasPresumption_Desc
+    a :ObjectProperty ;
+    rdfs:domain aif:PresumptiveInference_Scheme .
+
+aif:hasPreventionOfBadConsequence_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasPropertyNotExistant_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasProposalConsideration_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasQuestionedCredibility_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasRealisticGoal_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasRecursiveAction_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasRequiredSteps_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasResInterpretation_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasResolvingInconsistency_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasSetPrecedent_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasSignEventCorrelation_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasSignFromOtherEvents_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:hasSimilarityOfCases_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasSocialClimate_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasStrongConsequenceProbability_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasThreatCommitment_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasThreatRelevancy_Presumption
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPresumption .
+
+aif:hasTypicalObject_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasUnavailabilityOfKnowledge_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasVagueConditional_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasVagueProperty_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasWasteBad_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasWasteStop_Premise
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasPremise .
+
+aif:hasWeakestLink_Exception
+    a :ObjectProperty ;
+    rdfs:subPropertyOf aif:hasException .
+
+aif:schemeName
+    a :AnnotationProperty, :DatatypeProperty ;
+    rdfs:range xsd:string .
+
+xsd:date
+    a rdfs:Datatype .
+
