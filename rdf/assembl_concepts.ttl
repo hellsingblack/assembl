@@ -1,5 +1,4 @@
 # baseURI: http://assembl.net/ns/concepts/
-@prefix assemblc: <http://assembl.net/ns/concepts/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -14,6 +13,7 @@
 @prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
 @prefix aif: <http://www.arg.dundee.ac.uk/aif#> .
 @prefix assembl: <http://assembl.net/ns/core/> .
+@prefix assemblc: <http://assembl.net/ns/concepts/> .
 
 
 <http://assembl.net/ns/concepts/>
@@ -21,14 +21,79 @@
     dcterms:title "Assembl Concept Ontology Namespace"@en ;
     a owl:Ontology, owl:Thing .
 
+# Causal
+
 assemblc:Situation a owl:Class;
 	rdfs:subClassOf assembl:Concept, dul:Situation.
+
+assemblc:Progression a owl:Class;
+	rdfs:subClassOf assembl:Situation.
+
+assemblc:Indicator a owl:Class;
+	rdfs:subClassOf assembl:Concept.
+
+assemblc:progression_of a owl:FunctionalProperty;
+	rdfs:range assemblc:Progression;
+	rdfs:domain assemblc:Indicator.
+
+assemblc:progression_valence a owl:FunctionalProperty;
+	rdfs:range assemblc:Progression;
+	rdfs:domain assemblc:ProgressionValence.
 
 assemblc:Action a owl:Class;
 	rdfs:subClassOf assemblc:Situation, dul:Action.
 
+assemblc:Agent a owl:Class;
+	rdfs:subClassOf assembl:Concept, dul:Agent.
+
+assemblc:involvesAgent a owl:ObjectProperty;
+	subPropertyOf dul:involvesAgent;
+	rdfs:domain assemblc:Action;
+	rdfs:range assemblc:Agent.
+
 assemblc:Transition a owl:Class;
-	rdfs:subClassOf assemblc:Concept, dul:Transition.
+	rdfs:subClassOf assemblc:Connection, dul:Transition.
+
+# Should those be objects rather than properties?
+# Probably, as it allows to assign metadata (creator, date...)
+# and have a historical view. But let's start with properties for now...
+
+# Another issue... functional or not? I say not. All the causes can have any of the effects.
+
+assemblc:has_cause a owl:ObjectProperty;
+	rdfs:domain assemblc:Transition;
+	rdfs:range assemblc:Situation.
+
+assemblc:has_effect a owl:ObjectProperty;
+	rdfs:domain assemblc:Transition;
+	rdfs:range assemblc:Situation.
+
+assemblc:transition_valence a owl:FunctionalProperty;
+	rdfs:domain assemblc:Transition;
+	rdfs:range assemblc:TransitionValence.
+
+assemblc:TransitionValenceScheme a skos:ConceptScheme.
+
+assemblc:TransitionValence a owl:Class;
+	rdfs:subClassOf skos:Concept;
+	skos:inScheme assemblc:TransitionValenceScheme.
+
+assembl:causes a owl:TransitionValence.
+assembl:impairs a owl:TransitionValence.
+# the following are more precise than cause/impair. Optional.
+assembl:starts a owl:TransitionValence.
+assembl:stops a owl:TransitionValence.
+assembl:increases a owl:TransitionValence. # but will not start.
+assembl:decreases a owl:TransitionValence. # but will not stop.
+assembl:reverses a owl:TransitionValence. # but will not stop.
+
+# How to negate a cause? i.e. !(A->B), which is not the same as (A->!B). 
+# Option 1: Assert, and use a necessary negative argument... not nice.
+# Option 2: introduce negation on Connections... may be a good idea in general.
+# Option 3: Negative valence instances.
+
+
+# Votes on causal entities
 
 assemblc:DesirabilityVote a owl:Class;
 	rdfs:subClassOf assembl:Vote.
@@ -44,23 +109,26 @@ assemblc:plausibility_of rdfs:subPropertyOf assembl:topic;
 	rdfs:domain assemblc:PlausibilityVote;
 	rdfs:range assemblc:Sequence.
 
-# Should those be objects rather than properties?
-# Probably, as it allows to assign metadata (creator, date...)
-# and have a historical view. But let's start with properties for now...
-assemblc:has_cause a rdfs:FunctionalProperty;
-	rdfs:domain assemblc:Sequence;
-	rdfs:range assemblc:Situation.
+# TODO
+# * Relative votes
 
-assemblc:has_effect a rdfs:FunctionalProperty;
-	rdfs:domain assemblc:Sequence;
-	rdfs:range assemblc:Situation.
+# Rhetorical 
 
 assemblc:Argument a owl:Class;
-	rdfs:subClassOf assembl:Concept, aif:Statement;
+	rdfs:subClassOf assembl:Connection, aif:Statement.
 
-assemblc:argument_about a owl:FunctionalProperty;
+assemblc:argument_about_transition a owl:FunctionalProperty;
 	rdfs:domain assemblc:Argument;
-	rdfs:range assemblc:Sequence.
+	rdfs:range assemblc:Transition.
+
+assemblc:argument_about_argument a owl:FunctionalProperty;
+	rdfs:domain assemblc:Argument;
+	rdfs:range assemblc:Argument.
+	# aif equivalent?
+
+assemblc:argument_valence a owl:FunctionalProperty;
+	rdfs:domain assemblc:Argument;
+	rdfs:range assemblc:ArgumentValence.
 
 assemblc:ArgumentValenceScheme a skos:ConceptScheme.
 
@@ -68,18 +136,53 @@ assemblc:ArgumentValence a owl:Class;
 	rdfs:subClassOf skos:Concept;
 	skos:inScheme assemblc:ArgumentValenceScheme.
 
-assemblc:has_valence a owl:FunctionalProperty;
-	rdfs:domain assemblc:Argument;
-	rdfs:range assemblc:ArgumentValence.
+# Composition
 
-assemblc:argument_valence a owl:FunctionalProperty;
-	rdfs:domain assemblc:Argument;
-	rdfs:range assemblc:ArgumentValence.
+dul:hasPart a owl:TransitiveProperty.
 
-dul:hasPart a owl:TransitiveProperty;
+# Abstraction
 
-# TODO
-# * Abstraction of similar concepts.
-# * Relative votes
-# * Attribution (procès d'intention)
+assemblc:Abstraction a owl:Class;
+	rdfs:subClassOf assembl:Connection.
 
+assemblc:abstract_concept a owl:FunctionalProperty;
+	rdfs:domain assemblc:Abstraction;
+	rdfs:range assembl:Concept.
+
+assemblc:concrete_concept a owl:ObjectProperty;
+	rdfs:domain assemblc:Abstraction;
+	rdfs:range assembl:Concept.
+
+assemblc:ignored_feature a owl:ObjectProperty;
+	rdfs:domain assemblc:Abstraction;
+	rdfs:range assembl:Concept.
+
+assemblc:essential_feature a owl:ObjectProperty;
+	rdfs:domain assemblc:Abstraction;
+	rdfs:range assembl:Concept.
+
+# Attribution (procès d'intention)
+
+assemblc:conceptualizes a owl:ObjectProperty;
+	rdfs:domain assemblc:Agent;
+	rdfs:range assembl:Idea;
+	rdfs:subPropertyOf dul:conceptualizes. # Note that this one goes to dul:SocialObject
+
+assemblc:Attribution a owl:Class;
+	rdfs:subClassOf assembl:Connection;
+
+assemblc:attributor a owl:ObjectProperty;
+	rdfs:domain assemblc:Attribution;
+	rdfs:range assemblc:Agent.
+
+assemblc:attributed_to a owl:ObjectProperty;
+	rdfs:domain assemblc:Attribution;
+	rdfs:range assemblc:Agent.
+
+assemblc:attributed_idea a owl:ObjectProperty;
+	rdfs:domain assemblc:Attribution;
+	rdfs:range assemblc:Idea.
+
+assemblc:attribution_quote a owl:ObjectProperty;
+	rdfs:domain assemblc:Attribution;
+	rdfs:range assembl:Excerpt .

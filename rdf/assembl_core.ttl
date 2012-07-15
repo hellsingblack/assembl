@@ -11,7 +11,11 @@
 @prefix graph: <http://www.w3.org/2004/03/trix/rdfg-1/>.
 @prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix cohere: <http://cohere.open.ac.uk/ontology/cohere.owl#> .
 @prefix assembl: <http://assembl.net/ns/core/> .
+
+# TODO: Diviser en sections correspondants aux milestones...
+
 
 # Notes:
 # Most of the existing messaging ontology (threads, posts, containers) is already described in SIOC. Use it.
@@ -66,7 +70,6 @@
     dcterms:title "Assembl Core Ontology Namespace"@en ;
     a owl:Ontology, owl:Thing .
 
-
 assembl:Document a owl:Class;
 	owl:subClassOf sioc:Item, oac:Target, foaf:Document.
 
@@ -80,27 +83,6 @@ assembl:VersionableDocument a owl:Class;
 	rdfs:comment "Mutable documents with named versions."@en ;
 	rdfs:subClassOf assembl:MutableDocument .
 
-assembl:Snapshot a owl:Class;
-	rdfs:subClassOf assembl:Document.
-
-assembl:snapshotOf a owl:ObjectProperty;
-	rdfs:domain assembl:Snapshot;
-	rdfs:range assembl:MutableDocument.
-
-assembl:NamedSnapshot a owl:Class;
-	rdfs:subClassOf assembl:Snapshot.
-
-assembl:NamedSnapshotOf a owl:ObjectProperty;
-	rdfs:subPropertyOf assembl:snapshotOf;
-	rdfs:range assembl:VersionableDocument.
-
-assembl:snapshotVersion a owl:ObjectProperty;
-	rdfs:domain assembl:NamedSnapshot;
-	rdfs:range rdfs:Literal.
-
-assembl:snapshotTime a owl:ObjectProperty;
-	rdfs:domain assembl:Snapshot;
-	rdfs:range xsd:dateTime.
 
 assembl:Excerpt a owl:Class;
 	rdfs:comment "A fragment of an item or document."@en;
@@ -119,8 +101,18 @@ assembl:fragmentText a owl:FunctionalProperty;
 	rdfs:range rdfs:Literal, xsd:string .
 
 
-assembl:Concept a owl:Class;
+assembl:Idea a owl:Class;
 	rdfs:subClassOf owl:Thing , dul:Entity.
+	# dul:SocialObject?
+	# Not sure about reln to cohere:abstract_idea. 
+	# I think assembl:Idea are more general than cohere:abstract_idea, but more specific than
+	# cohere:abstract_object. Certainly assembl:Concept subclasses cohere:abstract_idea.
+
+assembl:Concept a owl:Class;
+	rdfs:subClassOf assembl:Idea , cohere:abstract_idea .
+
+assembl:Connection a owl:Class;
+	rdfs:subClassOf assembl:Idea , cohere:connection .
 
 assembl:definitionExcerpt a owl:ObjectProperty;
 	rdfs:domain assembl:Concept;
@@ -151,7 +143,7 @@ assembl:conceptDocument a owl:ObjectProperty;
 
 assembl:excerptOf a owl:ObjectProperty;
 	rdfs:range assembl:Excerpt;
-	rdfs:domain assembl:Concept.
+	rdfs:domain assembl:Idea.
 
 assembl:obsoleteExcerptOf a owl:ObjectProperty;
 	rdfs:subPropertyOf assembl:excerptOf.
@@ -175,6 +167,8 @@ assembl:has_forum a owl:FunctionalProperty;
 	rdfs:domain assembl:AssemblySpace;
 	rdfs:range assembl:AssemblyForum.
 
+# Roles
+
 assembl:moderator_of a owl:ObjectProperty ;
     rdfs:domain sioc:UserAccount ;
     rdfs:range assembl:AssemblySpace .
@@ -186,6 +180,8 @@ assembl:forum_moderator_of a owl:ObjectProperty ;
      	assembl:has_forum
     ).
 
+# Vote issues
+
 assembl:Vote a owl:Class.
 
 assembl:voter a owl:FunctionalProperty;
@@ -194,11 +190,36 @@ assembl:voter a owl:FunctionalProperty;
 
 assembl:vote_on a owl:FunctionalProperty;
 	rdfs:domain assembl:Vote;
-	rdfs:range assembl:Concept.
+	rdfs:range assembl:Idea.
 
 assembl:VoteValence a owl:Class;
-	rdfs:subClassOf skos:Concept .
+	rdfs:subClassOf skos:Idea .
 
 assembl:has_valence a owl:FunctionalProperty;
 	rdfs:domain assembl:Vote;
 	rdfs:range assembl:VoteValence .
+
+
+# Elements for later
+
+assembl:Snapshot a owl:Class;
+	rdfs:subClassOf assembl:Document.
+
+assembl:snapshotOf a owl:ObjectProperty;
+	rdfs:domain assembl:Snapshot;
+	rdfs:range assembl:MutableDocument.
+
+assembl:NamedSnapshot a owl:Class;
+	rdfs:subClassOf assembl:Snapshot.
+
+assembl:NamedSnapshotOf a owl:ObjectProperty;
+	rdfs:subPropertyOf assembl:snapshotOf;
+	rdfs:range assembl:VersionableDocument.
+
+assembl:snapshotVersion a owl:ObjectProperty;
+	rdfs:domain assembl:NamedSnapshot;
+	rdfs:range rdfs:Literal.
+
+assembl:snapshotTime a owl:ObjectProperty;
+	rdfs:domain assembl:Snapshot;
+	rdfs:range xsd:dateTime.
