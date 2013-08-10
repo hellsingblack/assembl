@@ -6,11 +6,12 @@ import transaction
 from pkg_resources import get_distribution
 from pyramid import testing
 from pyramid.paster import get_appsettings
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy import engine_from_config
 from webtest import TestApp
 
 import assembl
-from assembl.db import DBSession
+# from assembl.db import DBSession
 
 
 TEST_SETTINGS = 'testing.ini'
@@ -18,17 +19,46 @@ ASSEMBL_LOC = get_distribution('assembl').location
 TEST_SETTINGS_LOC = os.path.join(ASSEMBL_LOC, TEST_SETTINGS)
 
 
+def make_session():
+    engine = engine_from_config(
+        get_appsettings(TEST_SETTINGS_LOC),
+        'sqlalchemy.',
+        echo=False)
+    sess = sessionmaker(bind=engine)
+    return sess, sess(), engine
+
+
+def get_all_tables():
+    sess, sess_inst, engine = make_session()
+    res = engine.execute(
+        'SELECT table_schema,table_name FROM '
+        'information_schema.tables WHERE table_schema = '
+        '\'public\' ORDER BY table_schema,table_name')
+    sess_inst.close()
+    return res.fetchall()
+
+        
+def drop_tables():
+    # engine = sess.bind
+    sess, sess_inst, engine = make_session()
+    try:
+        for row in get_all_tables():
+            # cls.logger.info("Dropping table: %s" % row[1])
+            engine.execute("drop table \"%s\" cascade" % row[1]) 
+    except:
+        raise Exception('Error dropping tables: %s' % (
+            sys.exc_info()[1]))
+    sess_inst.close()
+
+    
+
 def setUp():
     """
     Import me if you want your database to be cleared before going
     through your test cases.
     """
-    DBSession.configure(bind=engine_from_config(
-        get_appsettings(TEST_SETTINGS_LOC),
-        'sqlalchemy.',
-        echo=False))
     from assembl.lib.alembic import bootstrap_db
-    BaseTest.drop_tables()
+    drop_tables()
     bootstrap_db(TEST_SETTINGS_LOC)
 
 
@@ -40,6 +70,7 @@ class BaseTest(unittest.TestCase):
     * To clear the Database rows between each tests.
     """
     logger = logging.getLogger('testing')
+    make_session = staticmethod(make_session)
 
     def setUp(self):
         app_settings = get_appsettings(TEST_SETTINGS_LOC)
@@ -55,43 +86,19 @@ class BaseTest(unittest.TestCase):
             registry=self.app.app.registry,
             settings=app_settings,
         )
-        self.session = DBSession()
         
         self.clear_rows()
         
     @classmethod
-    def get_all_tables(cls, conn):
-
-        res = conn.execute(
-            'SELECT table_schema,table_name FROM '
-            'information_schema.tables WHERE table_schema = '
-            '\'public\' ORDER BY table_schema,table_name')
-        return res.fetchall()
-        
-    @classmethod
     def clear_rows(cls):
-        engine = DBSession().bind
-        
+        sess, sess_inst, engine = make_session()
+
         for row in cls.get_all_tables(engine):
             cls.logger.info("Clearing table: %s" % row[1])
             engine.execute("delete from \"%s\"" % row[1])
 
-        DBSession.remove()
+        sess_inst.close()
 
-    @classmethod
-    def drop_tables(cls):
-        engine = DBSession().bind
-
-        try:
-            for row in cls.get_all_tables(engine):
-                cls.logger.info("Dropping table: %s" % row[1])
-                engine.execute("drop table \"%s\" cascade" % row[1]) 
-        except:
-            raise Exception('Error dropping tables: %s' % (
-                    sys.exc_info()[1]))
-        DBSession.remove()
 
 def tearDown():
-    DBSession.close_all()
-    DBSession.remove()
-
+    pass

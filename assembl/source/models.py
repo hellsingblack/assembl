@@ -1,3 +1,4 @@
+import uuid
 import email
 from email.header import decode_header as decode_email_header
 from datetime import datetime
@@ -23,6 +24,7 @@ from sqlalchemy import (
 
 from ..db import DBSession
 from ..lib.sqla import Base as SQLAlchemyBaseModel
+from ..lib.types import UUID
 
 
 class Source(SQLAlchemyBaseModel):
@@ -69,6 +71,10 @@ class Content(SQLAlchemyBaseModel):
     __tablename__ = "content"
 
     id = Column(Integer, primary_key=True)
+    uuid = Column(
+        UUID(),
+        default=uuid.uuid4)
+
     type = Column(String(60), nullable=False)
     creation_date = Column(DateTime, nullable=False, default=datetime.utcnow)
     
@@ -115,6 +121,7 @@ class Mailbox(Source):
     use_ssl = Column(Boolean, default=True)
     password = Column(Unicode(1024), nullable=False)
     mailbox = Column(Unicode(1024), default=u"INBOX", nullable=False)
+    mailing_address = Column(String(255), nullable=True)
 
     last_imported_email_uid = Column(Unicode(255))
 
