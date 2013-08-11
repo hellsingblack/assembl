@@ -1,16 +1,10 @@
-from assembl.tests.base import BaseTest, setUp, tearDown
+from assembl.tests.base import BaseTest
 from assembl.source.models import Email, Mailbox
-from assembl.db import DBSession
-
-
-setUp = setUp
-tearDown = tearDown
 
 
 class PostCase(BaseTest):
     def test_create_post(self):
         # import pdb; pdb.set_trace()
-        sess, sess_inst, engine = self.make_session()
 
         email = Email(
             to_address='the_mailing_list@aol.com',
@@ -31,10 +25,10 @@ class PostCase(BaseTest):
                 last_imported_email_uid='nothing',
             ),
         )
-        sess_inst.add(email)
-        sess_inst.flush()
-        sess_inst.refresh(email)
+        self.session.add(email)
+        self.session.flush()
+        self.session.refresh(email)
         self.assertEquals(
             len(email.uuid.hex),
             32)
-        sess_inst.close()
+        self.session.close()

@@ -69,10 +69,11 @@ Running tests
 -------------
 
 - Copy testing.ini.example to testing.ini
+- Create a testing database: createdb -U assembl assembl_test
 - nosetests
 
 
-Runing on Mac OS
+Running on Mac OS
 ----------------
 
 Use brew and install the libmemcached 

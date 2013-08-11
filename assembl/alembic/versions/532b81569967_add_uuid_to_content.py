@@ -1,14 +1,14 @@
 """add uuid to Content
 
 Revision ID: 532b81569967
-Revises: 40cee1019f16
+Revises: 2e1a77e61fb3
 Create Date: 2013-08-09 19:52:42.532290
 
 """
 
 # revision identifiers, used by Alembic.
 revision = '532b81569967'
-down_revision = '40cee1019f16'
+down_revision = '2e1a77e61fb3'
 
 import uuid
 from alembic import context, op
