@@ -1,9 +1,10 @@
-from colanderalchemy import (
-    SQLAlchemySchemaNode,
-    )
+from colanderalchemy import SQLAlchemySchemaNode
+from pyramid.events import ApplicationCreated
+from pyramid.events import subscriber
 
 
 class CustomFieldsSASchema(SQLAlchemySchemaNode):
+    _job_queue = []
 
     def __init__(self, 
                  class_,
@@ -14,28 +15,34 @@ class CustomFieldsSASchema(SQLAlchemySchemaNode):
                  field_overrides={},
                  **kw):
 
-        super(CustomFieldsSASchema, self).__init__(
-            class_, includes, excludes, overrides, unknown, **kw)
+        def initialize():
+            super(CustomFieldsSASchema, self).__init__(
+                class_, includes, excludes, overrides, unknown, **kw)
 
-        self.field_map = {}
+            self.field_map = {}
 
-        if field_overrides:
-            for field in field_overrides:
-                node_field = self.get(field)
-                field_data = field_overrides[field]
+            if field_overrides:
+                for field in field_overrides:
+                    node_field = self.get(field)
+                    field_data = field_overrides[field]
 
-                for key in field_data:
-                    if key == 'name':
-                        self.field_map[field] = field_data[key]
+                    for key in field_data:
+                        if key == 'name':
+                            self.field_map[field] = field_data[key]
                         
-                    setattr(
-                        node_field,
-                        key,
-                        field_data[key],
-                    )
+                        setattr(
+                            node_field,
+                            key,
+                            field_data[key],
+                        )
 
-        self.reverse_field_map = dict(
-            [(v, k) for k, v in self.field_map.items()])
+            self.reverse_field_map = dict(
+                [(v, k) for k, v in self.field_map.items()])
+
+        # Need to wait for application to be initialized to avoid
+        # relationship resolution exceptions. Init will be called
+        # after ApplicationCreated signal is called.
+        self._job_queue.append(initialize)
 
 
     def deserialize(self, data, *a, **kw):
@@ -129,15 +136,20 @@ class ValidateMeta(type):
     logic.
     """
     
-    # class Node(object):
-    #     def __call__(inst):
-            
-
+    _to_instantiate = []
+    
     def __new__(cls, *a, **kw):
         clsinst = type(*a, **kw)
-        field_overrides = getattr(clsinst, '__ca_field_overrides__', None)
-        clsinst.__ca__ = CustomFieldsSASchema(
+        field_overrides = getattr(
             clsinst,
-            field_overrides=field_overrides,
-        )
+            '__ca_field_overrides__',
+            None)
+        clsinst.__ca__ = CustomFieldsSASchema(
+            clsinst, field_overrides=field_overrides)
         return clsinst
+
+
+@subscriber(ApplicationCreated)
+def instantiate_colander_schemas(event):
+    for init in CustomFieldsSASchema._job_queue:
+        init()

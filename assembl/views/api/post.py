@@ -22,7 +22,6 @@ POST_ACL = [
     (Allow, 'r:admin', 'delete')
 ]
 
-
 posts = Service(name='posts', path=API_PREFIX + '/posts',
                 description="Post API following SIOC vocabulary as much as possible",
                 renderer='json', acl=lambda req: POST_ACL)
@@ -116,6 +115,7 @@ def create_post(request):
     """
     We use post, not put, because we don't know the id of the post
     """
+    import bpdb; bpdb.set_trace()
     if False:  #TODO:  Check that the object doesn't exist already
         raise HTTPUnauthorized()
     data = json.loads(request.body)

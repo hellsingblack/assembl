@@ -3,6 +3,7 @@
 import uuid
 import json
 import transaction
+from pyramid.security import remember
 from assembl.tests.base import BaseTest
 from assembl.synthesis.models import (
     Idea,
@@ -16,7 +17,7 @@ from assembl.auth.models import AgentProfile, User
 class ApiTest(BaseTest):
     def setUp(self):
         super(ApiTest, self).setUp()
-        self.discussion = self.create_dummy_discussion()
+        self.discussion, self.user = self.create_dummy_data()
 
     def get_url(self, discussion, suffix):
         return '/api/v1/discussion/%d/%s' % (
@@ -24,7 +25,13 @@ class ApiTest(BaseTest):
             suffix,
         )
 
-    def create_dummy_discussion(self):
+    def authenticate(self, username='ben', password='ben'):
+        return self.app.post('/login', {
+            'identifier': username,
+            'password': password,
+        })
+
+    def create_dummy_data(self):
         agent = AgentProfile(name="Dummy agent")
         user = User(username="ben", profile=agent)
         discussion = Discussion(
@@ -33,13 +40,14 @@ class ApiTest(BaseTest):
             table_of_contents=TableOfContents(),
             owner=user,
         )
+        user.set_password('ben')
 
         self.session.add(discussion)
         self.session.flush()
         self.session.refresh(discussion)
+        self.session.commit()
+        return discussion, user
 
-        return discussion
-        
     def test_extracts(self):
         extract_id = '38ebdaac-c0f0-408e-8904-7f343851fc61'
         extract_data = {
@@ -109,4 +117,20 @@ class ApiTest(BaseTest):
 
         ideas = json.loads(res.body)
         self.assertEquals(len(ideas), 1)
+
+    def test_create_post(self):
+        # print [x for x in self.session.query(User)]
+        # print [x for x in self.session.query(Discussion)]
+        url = self.get_url(self.discussion, 'posts', )
+        data = {
+            'kakadoodle1': 'herpidyderpidy',
+        }
+        res = self.authenticate()
+        res = self.app.post(
+            url,
+            json.dumps(data),
+        )
+        self.assertEquals(res.status_code, 200)
+        
+        # import pdb; pdb.set_trace()
         

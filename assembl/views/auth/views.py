@@ -224,6 +224,7 @@ def assembl_login_complete_view(request):
     password = request.params.get('password', '').strip()
     logged_in = authenticated_userid(request)
     user = None
+
     if '@' in identifier:
         account = DBSession.query(EmailAccount).filter_by(
             email=identifier, verified=True).first()

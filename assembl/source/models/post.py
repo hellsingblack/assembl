@@ -12,10 +12,10 @@ from sqlalchemy import (
     or_,
 )
 
+from assembl.lib.models import ValidateMeta
 from assembl.db.models import SQLAlchemyBaseModel
 from assembl.db import DBSession
 from assembl.source.models.generic import Content
-
 
 
 class Post(SQLAlchemyBaseModel):
@@ -24,6 +24,7 @@ class Post(SQLAlchemyBaseModel):
     Assembl. It may be a response to another post, it may have responses, and
     its content may be of any type.
     """
+    __metaclass__ = ValidateMeta
     __tablename__ = "post"
 
     id = Column(Integer, primary_key=True)
