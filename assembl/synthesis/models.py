@@ -389,6 +389,11 @@ class TableOfContents(IdeaGraphView):
     def __repr__(self):
         return "<TableOfContents %s>" % repr(self.discussion.topic)
 
+    def ideas(self):
+        return self.discussion.ideas
+
+    def get_idea_links(self):
+        return self.discussion.get_idea_links()
 
 class Synthesis(ExplicitSubGraphView):
     """

@@ -215,7 +215,7 @@
     "TableOfContents": {
         "creation_date": true,
         "discussion": false,
-        "ideas": [":partial"],
+        "ideas": ["&ideas:partial"],
         "idea_links": ["&get_idea_links:partial"]
     },
     "Synthesis": {
