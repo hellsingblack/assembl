@@ -1,0 +1,39 @@
+app_compile              Fast Update: don't update requirements
+    app_db_install           Install db the first time and fake migrations
+    app_db_update            Migrates database using south
+    app_fullupdate           Full Update: maincode and dependencies
+    app_update               Fast Update: don't update requirements
+    app_update_dependencies
+    bootstrap                Create the virtualenv and install the app
+    bootstrap_from_checkout  Create the virtualenv and install the app
+    bootstrap_full           Install system tools, create venv and install app
+    bower_install
+    bower_update
+    build_virtualenv         Build the virtualenv
+    caravan_stagenv          [ENVIRONMENT] Staging
+    clone_repository         Clone repository and remove the exsiting one if necessary
+    coeus_stagenv            [ENVIRONMENT] Staging
+    coeus_stagenv2           [ENVIRONMENT] Staging
+    compile_messages         Run compile *.mo file from *.po
+    compile_stylesheets      Generate *.css files from *.scss
+    configure_rbenv
+    database_download        Dumps and downloads the database from the target server
+    database_dump            Dumps the database on remote site
+    database_restore         Restores the database backed up on the remote server
+    database_start           Makes sure the database server is running
+    database_upload          Uploads a local database backup to the target environment's server
+    devenv                   [ENVIRONMENT] Developpement (must be run from the project path:
+    flushmemcache            Resetting all data in memcached
+    inm_prodenv              [ENVIRONMENT] INM
+    install_bower
+    install_builddeps        Will install commonly needed build deps for pip django virtualenvs.
+    install_compass          (Re)Install compass, deleting current version
+    install_rbenv            Install the appropriate ruby environment for compass.
+    make_messages            Run *.po file generation for translation
+    prodenv                  [ENVIRONMENT] Production
+    reloadapp                Touch the wsgi
+    setup_in_venv            Setup the virtualenv (dependencies, ruby, etc.) and compile and install
+    update_bower
+    update_compass           Make sure compass version is up to date
+    update_requirements      update external dependencies on remote host
+    webservers_reload        Reload the webserver stack.

@@ -1,375 +1,335 @@
-define(['jquery', 'underscore', 'ckeditor', 'moment', 'i18n', 'zeroclipboard', 'types', 'permissions'],
-function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
-    'use strict';
+define(['marionette','jquery', 'underscore', 'ckeditor', 'moment', 'i18n', 'zeroclipboard', 'types', 'permissions'],
+    function(Marionette, $, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
 
-    ckeditor.disableAutoInline = true;
+        Backbone.$.ajaxSetup({
+            cache: false
+        });
 
-    var PANEL_QUANTITY = 'data-panel-qty',
-        CONTEXT_MENU_WIDTH = 150,
-        DRAGBOX_MAX_LENGTH = 25,
-        DISCUSSION_SLUG = $('#discussion-slug').val(),
-        DISCUSSION_ID = $('#discussion-id').val(),
-        SOCKET_URL = $('#socket-url').val(),
-        CURRENT_USER_ID = $('#user-id').val();
-    /**
-     * The observer
-     * Who watches the watchmen ?
-     * @type {Object}
-     */
-    var o = {};
+        var Assembl = {
+            Models : {},
+            Collections : {},
+            Views : {},
+            Factories : {}
+        };
 
-    /**
-     * @class app
-     * The most important object in the world.
-     * @type {App}
-     */
-    window.app = {
-        /**
-         * Send debugging output to console.log to observe when views render
-         * @type {boolean}
-         */
-        debugRender: false,
-            
-        /**
-         * Reference to the body as jQuery object
-         * @type {jQuery}
-         */
-        doc: $(document),
+        Assembl.app = new Backbone.Marionette.Application();
 
-        /**
-         * Reference to the body as jQuery object
-         * @type {jQuery}
-         */
-        body: $(document.body),
+        Assembl.app.addInitializer(function(){
+            Assembl.app.addRegions({
+                header: '',
+                side: '',
+                body: '',
+                slider: ''
+            });
+        });
+
+        Assembl.app.addInitializer(function(){});
+
+        var
+            CONTEXT_MENU_WIDTH = 150,
+            DRAGBOX_MAX_LENGTH = 25,
+            DISCUSSION_SLUG = $('#discussion-slug').val(),
+            $d = $(document);
+
+        Assembl.socket_url = $('#socket-url').val();
 
         /**
          * Ckeditor default configuration
          * @type {object}
          */
-        CKEDITOR_CONFIG: {
+        Assembl.CKEDITOR_CONFIG = {
             toolbar: [  ['Bold', 'Italic', 'Outdent', 'Indent', 'NumberedList', 'BulletedList'] ],
             extraPlugins: 'sharedspace',
             removePlugins: 'floatingspace,resize',
             sharedSpaces: { top: 'ckeditor-toptoolbar', bottom: 'ckeditor-bottomtoolbar' }
-        },
+        }
 
-        AVAILABLE_MESSAGE_VIEW_STYLES: {
-            TITLE_ONLY: {id: "viewStyleTitleOnly",
+        Assembl.AVAILABLE_MESSAGE_VIEW_STYLES = {
+            TITLE_ONLY: {
+                id: "viewStyleTitleOnly",
                 label: i18n.gettext('Message titles')
             },
-            PREVIEW: {id: "viewStylePreview",
+            PREVIEW: {
+                id: "viewStylePreview",
                 label: i18n.gettext('Message previews')
             },
-            FULL_BODY: {id: "viewStyleFullBody",
+            FULL_BODY: {
+                id: "viewStyleFullBody",
                 label: i18n.gettext('Complete messages')
             }
-        },
-        
-        /**
-         * get a view style definition by id
-         * @param {messageViewStyle.id}
-         * @return {messageViewStyle or undefined}
-         */
-        getMessageViewStyleDefById: function(messageViewStyleId){
-            var retval = _.find(this.AVAILABLE_MESSAGE_VIEW_STYLES, function(messageViewStyle){ return messageViewStyle.id == messageViewStyleId; });
-            return retval;
-        },
-        /**
-         * Prefix used to generate the id of the element used by annotator to find it's annotation
-         * @type {string}
-         */
-        ANNOTATOR_MESSAGE_BODY_ID_PREFIX: "message-body-",
-        
-        /**
-         * The current slug for the discussion
-         * @type {String}
-         */
-        slug: DISCUSSION_SLUG,
-
-
-        /**
-         * The url for the changes websocket
-         * @type {String}
-         */
-        socket_url: SOCKET_URL,
-
-        /**
-         * The current discussion id
-         * @type {string}
-         */
-        discussionID: DISCUSSION_ID,
+        }
 
         /**
          * The a cache for posts linked by segments
          * FIXME:  Remove once lazy loading is implemented
          * @type {string}
          */
-        segmentPostCache: {},
-        
+        Assembl.segmentPostCache = {};
+
         /**
          * Current user
          * @type {User}
          */
-        currentUser: null,
+        Assembl.currentUser = null;
 
         /**
          * Csrf token
          * @type {String}
          */
-        csrfToken: null,
+        Assembl.csrfToken = null;
 
         /**
          * Default ease for all kids of animation
          * @type {String}
          */
-        ease: 'ease',
+        Assembl.ease = 'ease';
 
         /**
          * The date format
          * @type {String}
          */
-        dateFormat: 'DD/MM/YYYY',
+        Assembl.dateFormat = 'DD/MM/YYYY';
 
         /**
          * The datetime format
          * @type {string}
          */
-        datetimeFormat: 'DD/MM/YYYY HH:mm:ss',
+        Assembl.datetimeFormat = 'DD/MM/YYYY HH:mm:ss';
 
         /**
          * The time for all animations related to lateralMenu
          * @type {Number}
          */
-        lateralMenuAnimationTime: 600,
+        Assembl.lateralMenuAnimationTime = 600;
 
         /**
          * Current dragged segment
          * @type {Segment}
          */
-        draggedSegment: null,
+        Assembl.draggedSegment = null;
 
         /**
          * Current dragged idea
          * @type {Idea}
          */
-        draggedIdea: null,
+        Assembl.draggedIdea = null;
 
         /**
          * Current dragged annotation
          * @type {Annotation}
          */
-        draggedAnnotation: null,
+        Assembl.draggedAnnotation = null;
 
         /**
          * The lateral menu width
          * @type {number}
          */
-        lateralMenuWidth: 453,
+        Assembl.lateralMenuWidth = 453;
 
         /**
          * The selection tooltip.
          * @type {jQuery}
          */
-        selectionTooltip: null,
+        Assembl.selectionTooltip = null;
 
         /**
          * Reference to dragbox
          * @type {HTMLDivElement}
          */
-        dragbox: null,
+        Assembl.dragbox = null;
 
         /**
          * Qty of opened panels
          * @type {Number}
          */
-        openedPanels: 0,
+        Assembl.openedPanels = 0;
+
+        /**
+         * get a view style definition by id
+         * @param {messageViewStyle.id}
+         * @return {messageViewStyle or undefined}
+         */
+        Assembl.getMessageViewStyleDefById = function(messageViewStyleId){
+            var retval = _.find(Assembl.AVAILABLE_MESSAGE_VIEW_STYLES, function(messageViewStyle){ return messageViewStyle.id == messageViewStyleId; });
+            return retval;
+        }
 
         /**
          * Formats the url to the current api url
          * @param  {string} url
          * @return {string} The url formatted
          */
-        getApiUrl: function(url){
+        Assembl.getApiUrl = function(url){
+            var discussionId = $('#discussion-id').val();
+
             if( url[0] !== '/' ){
                 url = '/' + url;
             }
 
-            return '/api/v1/discussion/' + DISCUSSION_ID + url;
-        },
-
-        /**
-         * Formats the given to the generic api url
-         * @param {string} id The class name used in the api
-         * @return {string} The url formatted
-         *
-         * ex: 'local:Extract/1' -> '/api/v1/discussion/1/generic/Extract/1'
-         */
-        getGenericApiUrl: function(id){
-            var url = '/api/v1/discussion/' + DISCUSSION_ID + '/generic/';
-            return id.replace('local:', url);
-        },
+            return '/api/v1/discussion/' + discussionId + url;
+        }
 
         /**
          * Show or hide the given panel
          * @param  {String} panelName
          */
-        togglePanel: function(panelName){
-            var panel = app[panelName];
+        Assembl.togglePanel = function(panelName){
+            var panel = Assembl[panelName];
             if( panel === undefined ){
                 return false;
             }
 
             if( panel.$el.hasClass('is-visible') ){
-                app.closePanel(panel);
+                Assembl.closePanel(panel);
             } else {
-                app.openPanel(panel);
+                Assembl.openPanel(panel);
             }
-        },
+        }
 
         /**
          * Open the given panel
          * @param {backbone.View} panel
          */
-        openPanel: function(panel){
+        Assembl.openPanel = function(panel){
             if( panel.$el.hasClass('is-visible') ){
                 return false;
             }
 
-            app.openedPanels += 1;
-            app.body.attr(PANEL_QUANTITY, app.openedPanels);
-            app.body.removeClass('is-fullscreen');
+            Assembl.openedPanels += 1;
+            $d.attr('data-panel-qty', Assembl.openedPanels);
+            $d.removeClass('is-fullscreen');
             panel.$el.addClass('is-visible');
 
-            app.addPanelToStorage(panel.el.id);
+            Assembl.addPanelToStorage(panel.el.id);
 
             if( panel.button ) {
 
                 panel.button.addClass('active');
             }
-            app.trigger("panel:open", [panel]);
-        },
+            Assembl.trigger("panel:open", [panel]);
+        }
 
         /**
          * Close the given panel
          * @param {backbone.View} panel
          */
-        closePanel: function(panel){
+        Assembl.closePanel = function(panel){
             if( ! panel.$el.hasClass('is-visible') ){
                 return false;
             }
 
-            app.openedPanels -= 1;
-            app.body.attr(PANEL_QUANTITY, app.openedPanels);
-            if( app.isInFullscreen() ){
-                app.body.addClass('is-fullscreen');
+            Assembl.openedPanels -= 1;
+            $d.attr('data-panel-qty', Assembl.openedPanels);
+            if( Assembl.isInFullscreen() ){
+                $d.addClass('is-fullscreen');
             }
 
             panel.$el.removeClass('is-visible');
-            
-            app.removePanelFromStorage(panel.el.id);
+
+            Assembl.removePanelFromStorage(panel.el.id);
 
             if( panel.button ) {
                 panel.button.removeClass('active');
             }
-            app.trigger("panel:close", [panel]);
-        },
+            Assembl.trigger("panel:close", [panel]);
+        }
 
         /**
          * @return {Object} The Object with all panels in the localStorage
          */
-        getPanelsFromStorage: function(){
+        Assembl.getPanelsFromStorage = function(){
             var panels = JSON.parse(localStorage.getItem('panels')) || {};
             return panels;
-        },
+        }
 
         /**
          * Adds a panel in the localStoage
          * @param {string} panelId
          * @return {Object} The current object
          */
-        addPanelToStorage: function(panelId){
-            var panels = app.getPanelsFromStorage();
+        Assembl.addPanelToStorage = function(panelId){
+            var panels = Assembl.getPanelsFromStorage();
             panels[panelId] = 'open';
             localStorage.setItem('panels', JSON.stringify(panels));
 
             return panels;
-        },
+        }
 
         /**
          * Remove a panel from the localStorage by its id
          * @param  {string} panelId
          * @return {Object} The remaining panels
          */
-        removePanelFromStorage: function(panelId){
-            var panels = app.getPanelsFromStorage();
+        Assembl.removePanelFromStorage = function(panelId){
+            var panels = Assembl.getPanelsFromStorage();
             delete panels[panelId];
             localStorage.setItem('panels', JSON.stringify(panels));
 
             return panels;
-        },
+        }
 
         /**
          * @return {Object} The Object with mesagelistconfig in the localStorage
          */
-        getMessageListConfigFromStorage: function(){
+        Assembl.getMessageListConfigFromStorage = function(){
             var messageListConfig = JSON.parse(localStorage.getItem('messageListConfig')) || {};
             return messageListConfig;
-        },
+        }
 
         /**
          * Adds a panel in the localStorage
          * @param {Object} The Object with mesagelistconfig in the localStorage
          * @return {Object} The Object with mesagelistconfig in the localStorage
          */
-        setMessageListConfigToStorage: function(messageListConfig){
+        Assembl.setMessageListConfigToStorage = function(messageListConfig){
             localStorage.setItem('messageListConfig', JSON.stringify(messageListConfig));
             return messageListConfig;
-        },
-        
+        }
+
         /**
          * Checks if there is a panel in fullscreen mode
          * ( i.e.: there is only one open )
          * @return {Boolean}
          */
-        isInFullscreen: function(){
-            return app.openedPanels === 1;
-        },
+        Assembl.isInFullscreen = function(){
+            return Assembl.openedPanels === 1;
+        }
 
         /**
          * @return {Segment}
          */
-        getDraggedSegment: function(){
-            var segment = app.draggedSegment;
-            app.draggedSegment = null;
+        Assembl.getDraggedSegment = function(){
+            var segment = Assembl.draggedSegment;
+            Assembl.draggedSegment = null;
 
             if( segment ){
                 delete segment.attributes.highlights;
             }
 
             return segment;
-        },
+        }
 
         /**
          * @return {Idea}
          */
-        getDraggedIdea: function(){
-            if( app.ideaList && app.draggedIdea ){
-                app.ideaList.removeIdea(app.draggedIdea);
+        Assembl.getDraggedIdea = function(){
+            if( Assembl.ideaList && Assembl.draggedIdea ){
+                Assembl.ideaList.removeIdea(Assembl.draggedIdea);
             }
 
-            var idea = app.draggedIdea;
-            app.draggedIdea = null;
+            var idea = Assembl.draggedIdea;
+            Assembl.draggedIdea = null;
 
             return idea;
-        },
+        }
 
 
         /**
          * @return {Annotation}
          */
-        getDraggedAnnotation: function(){
-            var annotation = app.draggedAnnotation;
-            app.draggedAnnotation = null;
+        Assembl.getDraggedAnnotation = function(){
+            var annotation = Assembl.draggedAnnotation;
+            Assembl.draggedAnnotation = null;
 
             return annotation;
         },
@@ -377,131 +337,91 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
         /**
          * fulfill app.currentUser
          */
-        loadCurrentUser: function(){
-            if( app.users ){
-                app.currentUser = app.users.getByNumericId(CURRENT_USER_ID) || app.users.getUnknownUser();
-                app.currentUser.fetchPermissionsFromScripTag();
-                app.loadCsrfToken(true);
-                app.trigger('user:loaded', [app.getCurrentUser()]);
+            Assembl.loadCurrentUser = function(){
+                if( Assembl.users ){
+
+                    var current_user_id = $('#user-id').val();
+
+                    Assembl.currentUser = Assembl.users.getByNumericId(current_user_id) || Assembl.users.getUnknownUser();
+                    Assembl.currentUser.fetchPermissionsFromScripTag();
+                    Assembl.loadCsrfToken(true);
+                    Assembl.trigger('user:loaded', [app.getCurrentUser()]);
+                }
             }
-        },
 
         /**
          * @return {User}
          */
-        getCurrentUser: function(){
-            return app.currentUser || app.users.getUnknownUser();
-        },
+        Assembl.getCurrentUser = function(){
+            return Assembl.currentUser || Assembl.users.getUnknownUser();
+        }
 
         /**
          * fallback: synchronously load app.csrfToken
          */
-        loadCsrfToken: function(async){
+        Assembl.loadCsrfToken = function(async){
             $.ajax('/api/v1/token', {
                 async: async,
                 dataType: 'text',
                 success: function(data) {
-                    app.csrfToken = data;
+                    Assembl.csrfToken = data;
                 }
             });
-            return app.csrfToken;
-        },
+            return Assembl.csrfToken;
+        }
 
         /**
          * @return {User}
          */
-        getCsrfToken: function(){
-            return app.csrfToken || app.loadCsrfToken(false);
-        },
+        Assembl.getCsrfToken = function(){
+            return Assembl.csrfToken || Assembl.loadCsrfToken(false);
+        }
 
         /**
          * Return the Post related to the given annotation
          * @param {Annotation} annotation
          * @return {Message}
          */
-        getPostFromAnnotation: function(annotation){
+        Assembl.getPostFromAnnotation = function(annotation){
             var span = $(annotation.highlights[0]),
                 messageId = span.closest('[id^="'+this.ANNOTATOR_MESSAGE_BODY_ID_PREFIX+'"]').attr('id');
 
-            return app.messageList.messages.get(messageId.substr(this.ANNOTATOR_MESSAGE_BODY_ID_PREFIX.length));
-        },
+            return Assembl.messageList.messages.get(messageId.substr(this.ANNOTATOR_MESSAGE_BODY_ID_PREFIX.length));
+        }
 
 
         /**
          * Saves the current annotation if there is any
          */
-        saveCurrentAnnotation: function(){
-            if( app.currentUser.can(Permissions.EDIT_EXTRACT) &&
-                app.messageList.annotatorEditor ){
-                app.messageList.annotatorEditor.element.find('.annotator-save').click();
+        Assembl.saveCurrentAnnotation = function(){
+            if( Assembl.currentUser.can(Permissions.EDIT_EXTRACT) &&
+                Assembl.messageList.annotatorEditor ){
+                Assembl.messageList.annotatorEditor.element.find('.annotator-save').click();
             }
-        },
+        }
 
         /**
          * Creates the selection tooltip
          */
-        createSelectionTooltip: function(){
-            app.selectionTooltip = $('<div>', { 'class': 'textbubble' } );
-            app.body.append(app.selectionTooltip.hide());
-        },
-
-        /**
-         * Subscribe an event
-         * @param {string} eventName
-         * @param {function} eventFunction
-         */
-        on: function(eventName, eventFunction){
-            if( ! (eventName in o) ){
-                o[eventName] = [];
-            }
-
-            if( _.isFunction(eventFunction) ){
-                o[eventName].push(eventFunction);
-            }
-        },
-
-        /**
-         * Unsubscribe an event
-         * @param  {string} eventName
-         * @param  {function} eventFunction
-         */
-        off: function(eventName, eventFunction){
-            if( eventName in o ){
-                if( _.isFunction(eventFunction) ){
-                    o[eventName] = _.without(o[eventName], eventFunction);
-                } else {
-                    o[eventName] = [];
-                }
-            }
-        },
-
-        /**
-         * Triggers an event
-         * @param {string} eventName
-         * @param {array} args
-         */
-        trigger: function(eventName, args){
-            if( eventName in o ){
-                _.each(o[eventName], function(func){
-                    func.apply(window, args);
-                });
-            }
-        },
+        Assembl.createSelectionTooltip = function(){
+            Assembl.selectionTooltip = $('<div>', { 'class': 'textbubble' } );
+            $d.append(Assembl.selectionTooltip.hide());
+        }
 
         /**
          * Returns a template from an script tag
          * @param {string} id The id of the script tag
          * @return {function} The Underscore.js _.template return
          */
-        loadTemplate: function(id){
+        Assembl.loadTemplate = function(id){
             return _.template( $('#tmpl-'+id).html() );
-        },
+        }
 
         /**
          * Return the select text on the document
          * @return {Selection}
          */
-        getSelectedText: function(){
+        Assembl.getSelectedText = function(){
             if( document.getSelection ){
                 return document.getSelection();
             } else if( window.getSelection ){
@@ -510,34 +430,34 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
                 var selection = document.selection && document.selection.createRange();
                 return selection.text ? selection.text : false;
             }
-        },
+        }
 
         /**
          * Shows the dragbox when user starts dragging an element
          * @param  {Event} ev The event object
          * @param  {String} text The text to be shown in the .dragbox
          */
-        showDragbox: function(ev, text){
+        Assembl.showDragbox = function(ev, text){
             if( ev.originalEvent ){
                 ev = ev.originalEvent;
             }
 
-            if( app.dragbox === null ){
-                app.dragbox = document.createElement('div');
-                app.dragbox.className = 'dragbox';
-                app.dragbox.setAttribute('hidden', 'hidden');
+            if( Assembl.dragbox === null ){
+                Assembl.dragbox = document.createElement('div');
+                Assembl.dragbox.className = 'dragbox';
+                Assembl.dragbox.setAttribute('hidden', 'hidden');
 
-                app.body.append(app.dragbox);
+                $d.append(Assembl.dragbox);
             }
 
-            app.dragbox.removeAttribute('hidden');
+            Assembl.dragbox.removeAttribute('hidden');
 
             text = text || i18n.gettext('Extract');
 
             if( text.length > DRAGBOX_MAX_LENGTH ){
                 text = text.substring(0, DRAGBOX_MAX_LENGTH) + '...';
             }
-            app.dragbox.innerHTML = text;
+            Assembl.dragbox.innerHTML = text;
 
             if( ev.dataTransfer ) {
                 ev.dataTransfer.dropEffect = 'all';
@@ -547,26 +467,26 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
             }
 
             $(ev.currentTarget).one("dragend", function(){
-                app.dragbox.setAttribute('hidden', 'hidden');
+                Assembl.dragbox.setAttribute('hidden', 'hidden');
             });
-        },
+        }
 
         /**
          * Return the current time
          * @return {timestamp}
          */
-        getCurrentTime: function(){
+        Assembl.getCurrentTime = function(){
             return (new Date()).getTime();
-        },
+        }
 
         /**
          * Capitalize the first letter of the string
          * @param {string} str
          * @return {string}
          */
-        capitalize: function(str){
+        Assembl.capitalize = function(str){
             return str.charAt(0).toUpperCase() + str.slice(1);
-        },
+        }
 
         /**
          * Format string function
@@ -574,13 +494,13 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
          * @param {string} ...
          * @return {string}
          */
-        format: function(str){
+        Assembl.format = function(str){
             var args = [].slice.call(arguments, 1);
 
             return str.replace(/\{(\d+)\}/g, function(a,b){
                 return typeof args[b] != 'undefined' ? args[b] : a;
             });
-        },
+        }
 
         /**
          * Format date
@@ -588,8 +508,8 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
          * @param {string} [format=app.dateFormat] The format
          * @return {string}
          */
-        formatDate: function(date, format){
-            format = format || app.dateFormat;
+        Assembl.formatDate = function(date, format){
+            format = format || Assembl.dateFormat;
 
             if( date === null ){
                 return '';
@@ -597,7 +517,7 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
 
             date = new Moment(date);
             return date.format(format);
-        },
+        }
 
         /**
          * Format date time
@@ -605,9 +525,9 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
          * @param {String} [format=app.datetimeFormat] The format
          * @return {string}
          */
-        formatDatetime: function(date, format){
-            return app.formatDate(date, format || app.datetimeFormat);
-        },
+        Assembl.formatDatetime = function(date, format){
+            return Assembl.formatDate(date, format || Assembl.datetimeFormat);
+        }
 
         /**
          * Shows the context menu given the options
@@ -616,8 +536,8 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
          * @param {Object} scope The scope where the functions will be executed
          * @param {Object<string:function>} items The items on the context menu
          */
-        showContextMenu: function(x, y, scope, items){
-            app.hideContextMenu();
+        Assembl.showContextMenu = function(x, y, scope, items){
+            Assembl.hideContextMenu();
 
             var menu = $('<div>').addClass('contextmenu');
 
@@ -634,9 +554,9 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
                 menu.append( item );
             });
 
-            app.body.append( menu );
+            $d.append( menu );
             window.setTimeout(function(){
-                app.doc.on("click", app.hideContextMenu);
+                $d.on("click", app.hideContextMenu);
             });
 
             // Adjusting menu position
@@ -646,57 +566,57 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
             if( menuY >= maxY ){
                 menu.css({'top': maxY - menu.height() });
             }
-        },
+        }
 
         /**
          * Removes all .contextmenu on the page
          * @param {Event} [ev=null] If given, checks to see if it was clicked outside
          */
-        hideContextMenu: function(ev){
+        Assembl.hideContextMenu = function(ev){
             if( ev && ev.target.classList.contains('contextmenu')){
                 return;
             }
 
             $('.contextmenu').remove();
-            app.doc.off('click', app.hideContextMenu);
-        },
+            $d.off('click', app.hideContextMenu);
+        }
 
         /**
          * Set the given Idea as the current one to be edited
          * @param  {Idea} [idea]
          */
-        setCurrentIdea: function(idea){
+        Assembl.setCurrentIdea = function(idea){
             if (idea != this.getCurrentIdea()) {
-                app.trigger('idea:select', [idea]);
+                Assembl.trigger('idea:select', [idea]);
             }
-        },
+        }
 
         /**
          * Get the current Idea
          * @return {Idea}
          */
-        getCurrentIdea: function(){
-            return app.ideaPanel.idea;
-        },
+        Assembl.getCurrentIdea = function(){
+            return Assembl.ideaPanel.idea;
+        }
 
         /**
          * Returns an array with all segments for the given idea
          * @param {Idea} idea
          * @return {Array<Segment>}
          */
-        getSegmentsByIdea: function(idea){
+        Assembl.getSegmentsByIdea = function(idea){
             var id = idea.getId();
-            return app.segmentList && app.segmentList.segments ? app.segmentList.segments.where({idIdea:id}) : [];
-        },
+            return Assembl.segmentList && Assembl.segmentList.segments ? Assembl.segmentList.segments.where({idIdea:id}) : [];
+        }
 
         /**
          * Returns the order number for a new root idea
          * @return {Number}
          */
-        getOrderForNewRootIdea: function(){
-            var lastIdea = app.ideaList.ideas.last();
+        Assembl.getOrderForNewRootIdea = function(){
+            var lastIdea = Assembl.ideaList.ideas.last();
             return lastIdea ? lastIdea.get('order') + 1 : 0;
-        },
+        }
 
         /**
          * Returns the collection from the giving object's @type .
@@ -704,40 +624,40 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
          * @param {String} [type=item['@type']] The model type
          * @return {BaseCollection}
          */
-        getCollectionByType: function(item, type){
+        Assembl.getCollectionByType = function(item, type){
             type = type || item['@type'];
 
             switch(type){
                 case Types.EXTRACT:
-                    return app.segmentList.segments;
+                    return Assembl.segmentList.segments;
 
                 case Types.IDEA:
                 case Types.ROOT_IDEA:
-                    return app.ideaList.ideas;
+                    return Assembl.ideaList.ideas;
 
                 case Types.POST:
                 case Types.ASSEMBL_POST:
                 case Types.SYNTHESIS_POST:
                 case Types.IMPORTED_POST:
                 case Types.EMAIL:
-                    return app.messageList.messages;
+                    return Assembl.messageList.messages;
 
                 case Types.USER:
-                    return app.users;
-                    
+                    return Assembl.users;
+
                 case Types.SYNTHESIS:
-                    return app.syntheses;
+                    return Assembl.syntheses;
             }
 
             return null;
-        },
+        }
 
         /**
          * Shows the related segment from the given annotation
          * @param  {annotation} annotation
          */
-        showSegmentByAnnotation: function(annotation){
-            var segment = app.segmentList.segments.getByAnnotation(annotation);
+        Assembl.showSegmentByAnnotation = function(annotation){
+            var segment = Assembl.segmentList.segments.getByAnnotation(annotation);
 
             if( !segment ){
                 return;
@@ -745,21 +665,21 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
 
             if( segment.get('idIdea') ){
                 // It is in the ideaList
-                app.ideaPanel.showSegment(segment);
+                Assembl.ideaPanel.showSegment(segment);
             } else {
                 // It is in the segmentList
-                app.segmentList.showSegment(segment);
+                Assembl.segmentList.showSegment(segment);
             }
-        },
+        }
 
         /**
          * Shows the segment source in the better way related to the source
          * e.g.: If it is an email, opens it, if it is a webpage, open in another window ...
          * @param {Segment} segment
          */
-        showTargetBySegment: function(segment){
+        Assembl.showTargetBySegment = function(segment){
             var target = segment.get('target');
-            
+
             switch(target['@type']){
                 case 'Webpage':
                     window.open(target.url, "_blank");
@@ -769,19 +689,19 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
                     // This will treat:
                     // ['Email', 'Post', 'AssemblPost', 'SynthesisPost', 'ImportedPost']
 
-                    var selector = app.format('[data-annotation-id="{0}"]', segment.id);
-                    app.messageList.showMessageById(segment.get('idPost'), function(){
+                    var selector = Assembl.format('[data-annotation-id="{0}"]', segment.id);
+                    Assembl.messageList.showMessageById(segment.get('idPost'), function(){
                         $(selector).highlight();
                     });
                     break;
             }
-        },
+        }
 
         /**
          * Updates the order in the idea list
          */
-        updateIdealistOrder: function(){
-            var children = app.ideaList.ideas.where({ parentId: null }),
+        Assembl.updateIdealistOrder = function(){
+            var children = Assembl.ideaList.ideas.where({ parentId: null }),
                 currentOrder = 1;
 
             _.each(children, function(child){
@@ -789,13 +709,13 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
                 child.save();
                 currentOrder += 1;
             });
-        },
+        }
 
         /**
          * @see http://blog.snowfinch.net/post/3254029029/uuid-v4-js
          * @return {String} an uuid
          */
-        createUUID: function(){
+        Assembl.createUUID = function(){
             var uuid = "", i = 0, random;
 
             for (; i < 32; i++) {
@@ -809,71 +729,71 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
             }
 
             return uuid;
-        },
+        }
 
         /**
          * Given the string in the format "local:ModelName/{id}" returns the id
          * @param  {String} str
          * @return {String}
          */
-        extractId: function(str){
+        Assembl.extractId = function(str){
             return str.split('/')[1];
-        },
+        }
 
         /**
          * @param  {Number} userID The user's ID
          * @param  {Number} [size=44] The avatar size
          * @return {String} The avatar's url formatted with the given size
          */
-        formatAvatarUrl: function(userID, size){
+        Assembl.formatAvatarUrl = function(userID, size){
             size = size || 44;
-            return app.format("/user/id/{0}/avatar/{1}", userID, size);
-        },
+            return Assembl.format("/user/id/{0}/avatar/{1}", userID, size);
+        }
 
         /**
-         * Returns a fancy date (ex: a few seconds ago) 
+         * Returns a fancy date (ex: a few seconds ago)
          * @return {String}
          */
-        getDateFormated: function(date){
+        Assembl.getDateFormated = function(date){
             var momentDate = moment(date);
             return momentDate ? momentDate.fromNow() : momentDate;
-        },
+        }
 
         /**
          * @param  {String} html
          * @return {String} The new string without html tags
          */
-        stripHtml: function(html){
+        Assembl.stripHtml = function(html){
             return html ? $.trim( $('<div>'+html+'</div>').text() ) : html;
-        },
+        }
 
         /**
          * Sets the given panel as fullscreen closing all other ones
          * @param {Panel} targetPanel
          */
-        setFullscreen: function(targetPanel){
+        Assembl.setFullscreen = function(targetPanel){
             var panels = [
-                app.ideaList,
-                app.segmentList,
-                app.ideaPanel,
-                app.messageList,
-                app.synthesisPanel
+                Assembl.ideaList,
+                Assembl.segmentList,
+                Assembl.ideaPanel,
+                Assembl.messageList,
+                Assembl.synthesisPanel
             ];
 
             _.each(panels, function(panel){
                 if( targetPanel !== panel ){
-                    app.closePanel(panel);
-                    app.body.addClass('is-fullscreen');
+                    Assembl.closePanel(panel);
+                    $d.addClass('is-fullscreen');
                 }
             });
 
-            app.setCurrentIdea(null);
-        },
+            Assembl.setCurrentIdea(null);
+        }
 
         /**
          * @event
          */
-        onDropdownClick: function(ev){
+        Assembl.onDropdownClick = function(ev){
             var dropdown = $(ev.target);
 
             if( !dropdown.hasClass("dropdown-label") ){
@@ -892,36 +812,35 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
             }
 
             parent.addClass('is-open');
-            app.body.one('click', onMouseLeave);
-        },
+            $d.one('click', onMouseLeave);
+        }
 
         /**
          * @event
          */
-        onAjaxError: function( ev, jqxhr, settings, exception ){
+        Assembl.onAjaxError = function( ev, jqxhr, settings, exception ){
             var message = i18n.gettext('ajax error message:');
             message = "url: " + settings.url + "\n" + message + "\n" + exception;
 
             alert( message );
-            //window.location.reload();
-        },
+        }
 
         /**
          * Removes all tooltips from the screen
          */
-        cleanTooltips: function(){
+        Assembl.cleanTooltips = function(){
             $('.tipsy').remove();
-        },
+        }
 
-        setLocale: function(locale){
+        Assembl.setLocale = function(locale){
             document.cookie = "_LOCALE_="+locale+"; path=/";
             location.reload(true);
-        },
+        }
 
         /**
          * @init
          */
-        initTooltips: function(){
+        Assembl.initTooltips = function(){
             // reference: http://onehackoranother.com/projects/jquery/tipsy/
 
             $('[data-tooltip]').tipsy({
@@ -931,61 +850,58 @@ function($, _, ckeditor, Moment, i18n, ZeroClipboard, Types, Permissions){
                 title: function() { return this.getAttribute('data-tooltip'); },
                 opacity: 0.95
             });
-        },
+        }
 
         /**
          * @init
          */
-        initClipboard: function(){
-            if( ! app.clipboard ){
+        Assembl.initClipboard = function(){
+            if( ! Assembl.clipboard ){
                 ZeroClipboard.setDefaults( { moviePath: '/static/js/bower/zeroclipboard/ZeroClipboard.swf' } );
-                app.clipboard = new ZeroClipboard();
-                app.clipboard.on('complete', function(client, args){
+                Assembl.clipboard = new ZeroClipboard();
+                Assembl.clipboard.on('complete', function(client, args){
                     // Nothing to do, nowhere to go uouuu ...
                 });
 
-                app.clipboard.on('mouseover', function(client, args){
+                Assembl.clipboard.on('mouseover', function(client, args){
                     $(this).trigger('mouseover');
                 });
 
-                app.clipboard.on('mouseout', function(client, args){
+                Assembl.clipboard.on('mouseout', function(client, args){
                     $(this).trigger('mouseout');
                 });
             }
 
             $('[data-copy-text]').each(function(i, el){
                 var text = el.getAttribute('data-copy-text');
-                text = app.format('{0}//{1}/{2}{3}', location.protocol, location.host, DISCUSSION_SLUG, text);
+                text = Assembl.format('{0}//{1}/{2}{3}', location.protocol, location.host, DISCUSSION_SLUG, text);
                 el.removeAttribute('data-copy-text');
 
                 el.setAttribute('data-clipboard-text', text);
-                app.clipboard.glue(el);
+                Assembl.clipboard.glue(el);
             });
-        },
+        }
 
         /**
          * @init
          * inits ALL app components
          */
-        init: function(){
-            app.loadCurrentUser();
+        Assembl.init = function(){
+            Assembl.loadCurrentUser();
 
-            app.body.removeClass('preload');
-            app.createSelectionTooltip();
-            app.initTooltips();
+            $d.removeClass('preload');
+            Assembl.createSelectionTooltip();
+            Assembl.initTooltips();
 
-            app.doc.on('click', '.dropdown-label', app.onDropdownClick);
-            app.doc.on('ajaxError', app.onAjaxError);
+            $d.on('click', '.dropdown-label', Assembl.onDropdownClick);
+            $d.on('ajaxError', Assembl.onAjaxError);
 
-            app.on('render', function(){
-                /*if(app.debugRender) {
-                    console.log("app.on('render) triggered");
-                }*/
-                app.cleanTooltips();
-                window.setTimeout(app.initTooltips, 500);
+            Assembl.on('render', function(){
+                Assembl.cleanTooltips();
+                window.setTimeout(Assembl.initTooltips, 500);
             });
         }
-    };
 
-    return window.app;
-});
+        return Assembl;
+
+    });

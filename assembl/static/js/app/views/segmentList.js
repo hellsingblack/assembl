@@ -1,5 +1,5 @@
-define(['backbone', 'underscore', 'jquery', 'app', 'models/segment', 'i18n', 'permissions'],
-function(Backbone, _, $, app, Segment, i18n, Permissions){
+define(['backbone', 'underscore', 'jquery', 'app', 'collections/segment', 'i18n', 'permissions'],
+function(Backbone, _, $, Assembl, Segment, i18n, Permissions){
     'use strict';
 
     var SegmentList = Backbone.View.extend({
@@ -10,11 +10,11 @@ function(Backbone, _, $, app, Segment, i18n, Permissions){
             var that = this;
 
             if( obj && obj.button ){
-                this.button = $(obj.button).on('click', app.togglePanel.bind(window, 'segmentList'));
+                this.button = $(obj.button).on('click', Assembl.togglePanel.bind(window, 'segmentList'));
             }
 
             this.segments.on('invalid', function(model, error){ alert(error); });
-            app.users.on('reset', this.render, app.segmentList);
+            Assembl.users.on('reset', this.render, Assembl.segmentList);
             
             this.segments.on('add remove change reset', this.render, this);
 
@@ -27,13 +27,13 @@ function(Backbone, _, $, app, Segment, i18n, Permissions){
          * The template
          * @type {_.template}
          */
-        template: app.loadTemplate('segmentList'),
+        template: Assembl.loadTemplate('segmentList'),
 
         /**
          * The collection
          * @type {SegmentCollection}
          */
-        segments: new Segment.Collection(),
+        segments: new Assembl.Collections.Segment,
 
         /**
          * The panel element
@@ -46,13 +46,13 @@ function(Backbone, _, $, app, Segment, i18n, Permissions){
          * @return {segmentList}
          */
         render: function(){
-            if(app.debugRender) {
+            if(Assembl.debugRender) {
                 console.log("segmentList:render() is firing");
             }
-            app.trigger('render');
+            Assembl.trigger('render');
 
             var segments = this.segments.getClipboard(),
-                currentUser = app.getCurrentUser(),
+                currentUser = Assembl.getCurrentUser(),
                 data = {segments:segments,
                         canEditExtracts:currentUser.can(Permissions.EDIT_EXTRACT),
                         canEditMyExtracts:currentUser.can(Permissions.EDIT_MY_EXTRACT)
@@ -91,7 +91,7 @@ function(Backbone, _, $, app, Segment, i18n, Permissions){
          * @return {Segment}
          */
         addAnnotationAsSegment: function(annotation, idIdea){
-            var post = app.getPostFromAnnotation(annotation),
+            var post = Assembl.getPostFromAnnotation(annotation),
                 idPost = post.getId();
 
             var segment = new Segment.Model({
@@ -169,9 +169,9 @@ function(Backbone, _, $, app, Segment, i18n, Permissions){
          * @param {Segment} segment
          */
         showSegment: function(segment){
-            app.openPanel(app.segmentList);
+            Assembl.openPanel(Assembl.segmentList);
 
-            var selector = app.format('.box[data-segmentid={0}]', segment.cid),
+            var selector = Assembl.format('.box[data-segmentid={0}]', segment.cid),
                 box = this.$(selector);
 
             if( box.length ){
@@ -222,8 +222,8 @@ function(Backbone, _, $, app, Segment, i18n, Permissions){
             var cid = ev.currentTarget.getAttribute('data-segmentid'),
                 segment = this.segments.get(cid);
 
-            app.showDragbox(ev, segment.getQuote());
-            app.draggedSegment = segment;
+            Assembl.showDragbox(ev, segment.getQuote());
+            Assembl.draggedSegment = segment;
         },
 
         /**
@@ -236,7 +236,7 @@ function(Backbone, _, $, app, Segment, i18n, Permissions){
             }
 
             ev.currentTarget.style.opacity = '';
-            app.draggedSegment = null;
+            Assembl.draggedSegment = null;
         },
 
         /**
@@ -250,11 +250,11 @@ function(Backbone, _, $, app, Segment, i18n, Permissions){
                 isText = app.draggedIdea ? false : true;
             }
 
-            if( app.draggedSegment !== null || isText ){
+            if( Assembl.draggedSegment !== null || isText ){
                 this.panel.addClass("is-dragover");
             }
 
-            if( app.draggedAnnotation !== null ){
+            if( Assembl.draggedAnnotation !== null ){
                 this.panel.addClass("is-dragover");
             }
         },
@@ -277,18 +277,18 @@ function(Backbone, _, $, app, Segment, i18n, Permissions){
 
             this.panel.trigger('dragleave');
 
-            var idea = app.getDraggedIdea();
+            var idea = Assembl.getDraggedIdea();
             if( idea ){
                 return; // Do nothing
             }
 
-            var segment = app.getDraggedSegment();
+            var segment = Assembl.getDraggedSegment();
             if( segment ){
                 this.addSegment(segment);
                 return;
             }
 
-            var annotation = app.getDraggedAnnotation();
+            var annotation = Assembl.getDraggedAnnotation();
             if( annotation ){
                 app.saveCurrentAnnotation();
                 return;
@@ -329,7 +329,7 @@ function(Backbone, _, $, app, Segment, i18n, Permissions){
             var cid = ev.currentTarget.getAttribute('data-segmentid'),
                 segment = this.segments.get(cid);
 
-            app.showTargetBySegment(segment);
+            Assembl.showTargetBySegment(segment);
         }
 
     });

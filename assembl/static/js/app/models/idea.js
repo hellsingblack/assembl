@@ -1,5 +1,5 @@
 define(['models/base','underscore', 'models/segment', 'app', 'i18n', 'types', 'permissions'],
-function(Base, _, Segment, app, i18n, Types, Permissions){
+function(Base, _, Segment, Assembl, i18n, Types, Permissions){
     'use strict';
 
     /**
@@ -24,7 +24,7 @@ function(Base, _, Segment, app, i18n, Types, Permissions){
          * Url
          * @type {String}
          */
-        urlRoot: app.getApiUrl("ideas"),
+        urlRoot: Assembl.getApiUrl("ideas"),
 
         /**
          * Defaults
@@ -61,9 +61,9 @@ function(Base, _, Segment, app, i18n, Types, Permissions){
                 return i18n.gettext('The root idea will not be in the synthesis');
             }
 
-            if( app.stripHtml(this.get('definition')) !== '' ){
+            if( Assembl.stripHtml(this.get('definition')) !== '' ){
                 return this.get('definition');
-            } else if( app.stripHtml(this.get('longTitle')) !== '' ){
+            } else if( Assembl.stripHtml(this.get('longTitle')) !== '' ){
                 return this.get('longTitle');
             } else {
                 return i18n.gettext('Add a definition for this idea');
@@ -82,9 +82,9 @@ function(Base, _, Segment, app, i18n, Types, Permissions){
                 return i18n.gettext('The root idea will never be in the synthesis');
             }
 
-            if( app.stripHtml(this.get('longTitle')) !== '' ){
+            if( Assembl.stripHtml(this.get('longTitle')) !== '' ){
                 return this.get('longTitle');
-            } else if ( app.stripHtml(this.get('shortTitle')) !== '' ){
+            } else if ( Assembl.stripHtml(this.get('shortTitle')) !== '' ){
                 return this.get('shortTitle');
             } else {
                 return i18n.gettext('Add and expression for the next synthesis');
@@ -140,7 +140,7 @@ function(Base, _, Segment, app, i18n, Types, Permissions){
             if( parent ){
                 parent.updateChildrenOrder();
             } else {
-                app.updateIdealistOrder();
+                Assembl.updateIdealistOrder();
             }
         },
 
@@ -162,7 +162,7 @@ function(Base, _, Segment, app, i18n, Types, Permissions){
             if( parent ){
                 parent.updateChildrenOrder();
             } else {
-                app.updateIdealistOrder();
+                Assembl.updateIdealistOrder();
             }
         },
 
@@ -281,7 +281,7 @@ function(Base, _, Segment, app, i18n, Types, Permissions){
          * @return {array<Segment>}
          */
         getSegments: function(){
-            return app.getSegmentsByIdea(this);
+            return Assembl.getSegmentsByIdea(this);
         },
 
         /**
@@ -330,38 +330,6 @@ function(Base, _, Segment, app, i18n, Types, Permissions){
 
     });
 
-    /**
-     * @class IdeaColleciton
-     */
-    var IdeaCollection = Base.Collection.extend({
-        /**
-         * Url
-         * @type {String}
-         */
-        url: app.getApiUrl("ideas"),
-
-        /**
-         * The model
-         * @type {IdeaModel}
-         */
-        model: IdeaModel,
-
-        /**
-         * @return {Idea} The root idea
-         */
-        getRootIdea: function(){
-            var retval = this.findWhere({ '@type': Types.ROOT_IDEA });
-            if (!retval) {
-                console.log("ERROR: getRootIdea() failed!");
-                console.log(this);
-            }
-            return retval;
-        }
-    });
-
-    return {
-        Model: IdeaModel,
-        Collection: IdeaCollection
-    };
+    Assembl.Models.Idea = IdeaModel;
 
 });

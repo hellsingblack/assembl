@@ -1,5 +1,5 @@
 define(['backbone', 'underscore', 'models/idea', 'views/idea', "views/ideaGraph", 'app', 'types', 'views/allMessagesInIdeaList', 'views/orphanMessagesInIdeaList', 'views/synthesisInIdeaList', 'permissions', 'utils/renderVisitor', 'utils/siblingChainVisitor'],
-function(Backbone, _, Idea, IdeaView, ideaGraphLoader, app, Types, AllMessagesInIdeaListView, OrphanMessagesInIdeaListView, SynthesisInIdeaListView, Permissions, renderVisitor, siblingChainVisitor){
+function(Backbone, _, Idea, IdeaView, ideaGraphLoader, Assembl, Types, AllMessagesInIdeaListView, OrphanMessagesInIdeaListView, SynthesisInIdeaListView, Permissions, renderVisitor, siblingChainVisitor){
     'use strict';
 
     var FEATURED = 'featured',
@@ -25,7 +25,7 @@ function(Backbone, _, Idea, IdeaView, ideaGraphLoader, app, Types, AllMessagesIn
          * The tempate
          * @type {_.template}
          */
-        template: app.loadTemplate('ideaList'),
+        template: Assembl.loadTemplate('ideaList'),
 
         /**
          * .panel-body
@@ -59,15 +59,15 @@ function(Backbone, _, Idea, IdeaView, ideaGraphLoader, app, Types, AllMessagesIn
             this.ideas.on(events.join(' '), this.render, this);
 
             var that = this;
-            app.on('idea:delete', function(){
-                if(app.debugRender) {
+            Assembl.on('idea:delete', function(){
+                if(Assembl.debugRender) {
                     console.log("ideaList: triggering render because app.on('idea:delete') was triggered");
                 }
                 that.render();
             });
 
-            app.on('ideas:update', function(ideas){
-                if(app.debugRender) {
+            Assembl.on('ideas:update', function(ideas){
+                if(Assembl.debugRender) {
                     console.log("ideaList: triggering render because app.on('idea:update') was triggered");
                 }
                 that.ideas.add(ideas, {merge: true, silent: true});
@@ -78,19 +78,19 @@ function(Backbone, _, Idea, IdeaView, ideaGraphLoader, app, Types, AllMessagesIn
             // is associated with the idea, the idea itself will receive a change event
             // on the socket
             //app.segmentList.segments.on('add change reset', this.render, this);
-            
-            app.on("panel:open", function(){that.resizeGraphView();});
-            app.on("panel:close", function(){that.resizeGraphView();});
+
+            Assembl.on("panel:open", function(){that.resizeGraphView();});
+            Assembl.on("panel:close", function(){that.resizeGraphView();});
         },
 
         /**
          * The render
          */
         render: function(){
-            if(app.debugRender) {
+            if(Assembl.debugRender) {
                 console.log("ideaList:render() is firing");
             }
-            app.trigger('render');
+            Assembl.trigger('render');
 
             this.body = this.$('.panel-body');
             var y = 0,
@@ -153,7 +153,7 @@ function(Backbone, _, Idea, IdeaView, ideaGraphLoader, app, Types, AllMessagesIn
                 tocTotal: this.ideas.length -1,//We don't count the root idea
                 featuredTotal: this.ideas.where({featured: true}).length,
                 synthesisTotal: this.ideas.where({inNextSynthesis: true}).length,
-                canAdd: app.getCurrentUser().can(Permissions.ADD_IDEA)
+                canAdd: Assembl.getCurrentUser().can(Permissions.ADD_IDEA)
             };
 
             data.title = data.tocTitle;
@@ -250,7 +250,7 @@ function(Backbone, _, Idea, IdeaView, ideaGraphLoader, app, Types, AllMessagesIn
          * Sets the panel as full screen
          */
         setFullscreen: function(){
-            app.setFullscreen(this);
+            Assembl.setFullscreen(this);
         },
 
         toggleGraphView: function() {
@@ -271,11 +271,11 @@ function(Backbone, _, Idea, IdeaView, ideaGraphLoader, app, Types, AllMessagesIn
         loadGraphView: function() {
             if (this.show_graph) {
                 var that = this;
-                $.getJSON( app.getApiUrl('generic')+"/Discussion/"+app.discussionID+"/idea_graph_jit", function(data){
+                $.getJSON( Assembl.getApiUrl('generic')+"/Discussion/"+app.discussionID+"/idea_graph_jit", function(data){
                     that.graphData = data['graph'];
                     that.hypertree = ideaGraphLoader(that.graphData);
                     try {
-                        that.hypertree.onClick(app.getCurrentIdea().getId(), {
+                        that.hypertree.onClick(Assembl.getCurrentIdea().getId(), {
                             // onComplete: function() {
                             //     that.hypertree.controller.onComplete();
                             // },
@@ -293,7 +293,7 @@ function(Backbone, _, Idea, IdeaView, ideaGraphLoader, app, Types, AllMessagesIn
             if (this.show_graph && this.graphData !== undefined) {
                 try {
                     this.hypertree = ideaGraphLoader(this.graphData);
-                    this.hypertree.onClick(app.getCurrentIdea().getId(), {
+                    this.hypertree.onClick(Assembl.getCurrentIdea().getId(), {
                         duration: 0
                     });
                 } catch (Exception) {}
@@ -325,7 +325,7 @@ function(Backbone, _, Idea, IdeaView, ideaGraphLoader, app, Types, AllMessagesIn
          */
         onPanelBodyClick: function(ev){
             if( $(ev.target).hasClass('panel-body') ){
-                app.setCurrentIdea(null);
+                Assembl.setCurrentIdea(null);
             }
         },
 
@@ -334,7 +334,7 @@ function(Backbone, _, Idea, IdeaView, ideaGraphLoader, app, Types, AllMessagesIn
          * If no idea is selected, add it at the root level ( no parent )
          */
         addChildToSelected: function(){
-            var currentIdea = app.getCurrentIdea(),
+            var currentIdea = Assembl.getCurrentIdea(),
                 newIdea = new Idea.Model(),
                 that = this;
 
@@ -342,12 +342,12 @@ function(Backbone, _, Idea, IdeaView, ideaGraphLoader, app, Types, AllMessagesIn
                 newIdea.set('order', currentIdea.getOrderForNewChild());
                 currentIdea.addChild(newIdea);
             } else {
-                newIdea.set('order', app.getOrderForNewRootIdea());
+                newIdea.set('order', Assembl.getOrderForNewRootIdea());
                 this.ideas.add(newIdea);
                 newIdea.save();
             }
 
-            app.setCurrentIdea(newIdea);
+            Assembl.setCurrentIdea(newIdea);
         },
 
         /**

@@ -1,5 +1,5 @@
 define(['backbone', 'underscore', 'jquery', 'models/idea', 'app', 'views/idea'],
-function(Backbone, _, $, Idea, app, IdeaView){
+function(Backbone, _, $, Idea, Assembl, IdeaView){
     'use strict';
     
     var AllMessagesInIdeaListView = IdeaView.extend({
@@ -7,13 +7,13 @@ function(Backbone, _, $, Idea, app, IdeaView){
          * The template
          * @type {[type]}
          */
-        template: app.loadTemplate('allMessagesInIdeaList'),
+        template: Assembl.loadTemplate('allMessagesInIdeaList'),
 
         /**
          * The render
          */
         render: function(){
-            app.trigger('render');
+            Assembl.trigger('render');
 
             var data = this.model.toJSON();
 
@@ -40,10 +40,10 @@ function(Backbone, _, $, Idea, app, IdeaView){
          * @event
          */
         onTitleClick: function(){
-            if( app.messageList ){
-                app.messageList.showAllMessages();
+            if( Assembl.messageList ){
+                Assembl.messageList.showAllMessages();
             }
-            app.setCurrentIdea(null);
+            Assembl.setCurrentIdea(null);
         }
     });
 

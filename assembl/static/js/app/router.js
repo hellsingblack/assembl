@@ -1,4 +1,4 @@
-define(['backbone', 'jquery', 'app'], function(Backbone, $, app){
+define(['backbone', 'jquery', 'app'], function(Backbone, $, Assembl){
     'use strict';
 
     var Router = Backbone.Router.extend({
@@ -8,7 +8,7 @@ define(['backbone', 'jquery', 'app'], function(Backbone, $, app){
          * @type {Object}
          */
         routes: {
-            "": "home",
+            "/": "home",
             "idea/:id" : "idea",
             "idea/:slug/:id" : "ideaSlug",
             "message/:id": "message",
@@ -20,10 +20,10 @@ define(['backbone', 'jquery', 'app'], function(Backbone, $, app){
          * @param  {Number} id
          */
         idea: function(id){
-            app.openPanel( app.ideaList );
-            var idea = app.ideaList.ideas.get(id);
+            Assembl.openPanel( Assembl.ideaList );
+            var idea = Assembl.ideaList.ideas.get(id);
             if( idea ){
-                app.setCurrentIdea(idea);
+                Assembl.setCurrentIdea(idea);
             }
         },
 
@@ -39,9 +39,9 @@ define(['backbone', 'jquery', 'app'], function(Backbone, $, app){
          * @param  {Number} id
          */
         message: function(id){
-            app.openPanel( app.messageList );
-            app.messageList.messages.once('reset', function(){
-                app.messageList.showMessageById(id);
+            Assembl.openPanel( Assembl.messageList );
+            Assembl.messageList.messages.once('reset', function(){
+                Assembl.messageList.showMessageById(id);
             });
         },
 
@@ -56,20 +56,20 @@ define(['backbone', 'jquery', 'app'], function(Backbone, $, app){
          * Default home page
          */
         home: function(){
-            var panels = app.getPanelsFromStorage();
+            var panels = Assembl.getPanelsFromStorage();
             _.each(panels, function(value, name){
-                var panel = app[name];
+                var panel = Assembl[name];
                 if( panel && name !== 'ideaPanel' ){
-                    app.openPanel(panel);
+                    Assembl.openPanel(panel);
                 }
             });
-            if(app.openedPanels < 1) {
+            if(Assembl.openedPanels < 1) {
                 /* If no panel would be opened on load, open the table of ideas
                  * and the Message panel so the user isn't presented with a 
                  * blank screen
                  */
-                app.openPanel(app.ideaList);
-                app.openPanel(app.messageList);
+                Assembl.openPanel(Assembl.ideaList);
+                Assembl.openPanel(Assembl.messageList);
             }
         }
 

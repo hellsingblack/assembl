@@ -1,5 +1,5 @@
 define(['backbone', 'underscore', 'jquery', 'models/idea', 'models/segment', 'app', 'permissions'],
-function(Backbone, _, $, Idea, Segment, app, Permissions){
+function(Backbone, _, $, Idea, Segment, Assembl, Permissions){
     'use strict';
 
     var IdeaView = Backbone.View.extend({
@@ -13,7 +13,7 @@ function(Backbone, _, $, Idea, Segment, app, Permissions){
          * The template
          * @type {[type]}
          */
-        template: app.loadTemplate('idea'),
+        template: Assembl.loadTemplate('idea'),
 
         /**
          * Counter used to open the idea when it is dragover
@@ -29,7 +29,7 @@ function(Backbone, _, $, Idea, Segment, app, Permissions){
          */
         initialize: function(obj, view_data){
             if( _.isUndefined(this.model) ){
-                this.model = new Idea.Model();
+                this.model = new Assembl.Models.Idea();
             }
             this.view_data = view_data;
             this.model.on('change', this.render, this);
@@ -42,7 +42,7 @@ function(Backbone, _, $, Idea, Segment, app, Permissions){
          * @return {IdeaView}
          */
         render: function(){
-            app.trigger('render');
+            Assembl.trigger('render');
             var view_data = this.view_data;
             var render_data = view_data[this.model.getId()];
             if (render_data === undefined) {
@@ -129,7 +129,7 @@ function(Backbone, _, $, Idea, Segment, app, Permissions){
          * @event
          */
         onReplaced: function(newObject){
-            app.setCurrentIdea(newObject);
+            Assembl.setCurrentIdea(newObject);
         },
 
 
@@ -147,10 +147,10 @@ function(Backbone, _, $, Idea, Segment, app, Permissions){
          */
         onTitleClick: function(ev){
             ev.stopPropagation();
-            if( this.model === app.getCurrentIdea() ){
-                app.setCurrentIdea(null);
+            if( this.model === Assembl.getCurrentIdea() ){
+                Assembl.setCurrentIdea(null);
             } else {
-                app.setCurrentIdea(this.model);
+                Assembl.setCurrentIdea(this.model);
             }
         },
 
@@ -161,7 +161,7 @@ function(Backbone, _, $, Idea, Segment, app, Permissions){
             if( ev ){
                 ev.stopPropagation();
             }
-            if(app.getCurrentUser().can(Permissions.EDIT_IDEA)){
+            if(Assembl.getCurrentUser().can(Permissions.EDIT_IDEA)){
                 ev.currentTarget.style.opacity = 0.4;
                 ev.originalEvent.dataTransfer.effectAllowed = 'move';
                 ev.originalEvent.dataTransfer.dropEffect = 'all';
@@ -180,7 +180,7 @@ function(Backbone, _, $, Idea, Segment, app, Permissions){
                 ev.stopPropagation();
             }
             ev.currentTarget.style.opacity = '';
-            app.draggedSegment = null;
+            Assembl.draggedSegment = null;
         },
 
         /**
@@ -202,10 +202,10 @@ function(Backbone, _, $, Idea, Segment, app, Permissions){
 
             ev.dataTransfer.dropEffect = 'all';
 
-            if( app.draggedIdea !== null ){
+            if( Assembl.draggedIdea !== null ){
 
                 // Do nothing if it is the same idea
-                if( app.draggedIdea.cid === this.model.cid ){
+                if( Assembl.draggedIdea.cid === this.model.cid ){
                     ev.dataTransfer.dropEffect = 'none';
                     return;
                 }
@@ -281,20 +281,20 @@ function(Backbone, _, $, Idea, Segment, app, Permissions){
 
                 if( isDraggedBelow ){
                     // Add as a child
-                    app.currentAnnotationIdea = this.model;
-                    app.saveCurrentAnnotation();
+                    Assembl.currentAnnotationIdea = this.model;
+                    Assembl.saveCurrentAnnotation();
                 } else {
                     // Add as a segment
-                    app.currentAnnotationIdIdea = this.model.getId();
-                    app.saveCurrentAnnotation();
+                    Assembl.currentAnnotationIdIdea = this.model.getId();
+                    Assembl.saveCurrentAnnotation();
                 }
                 
                 return;
             }
 
-            if( app.draggedIdea && app.draggedIdea.cid !== this.model.cid ){
+            if( Assembl.draggedIdea && Assembl.draggedIdea.cid !== this.model.cid ){
 
-                var idea = app.getDraggedIdea();
+                var idea = Assembl.getDraggedIdea();
 
                 // If it is a descendent, do nothing
                 if( this.model.isDescendantOf(idea) ){

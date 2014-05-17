@@ -1,11 +1,11 @@
 define(['backbone', 'models/inbox', 'views/email', 'app'],
-function(Backbone, InboxModel, EmailView, app){
+function(Backbone, InboxModel, EmailView, Assembl){
     'use strict';
 
     var InboxView = Backbone.View.extend({
         el: '#inbox',
         model: new InboxModel(),
-        template: app.loadTemplate('inbox'),
+        template: Assembl.loadTemplate('inbox'),
 
         initialize: function(obj){
             this.collection = obj.collection;
@@ -13,7 +13,7 @@ function(Backbone, InboxModel, EmailView, app){
         },
 
         render: function(){
-            app.trigger('render');
+            Assembl.trigger('render');
 
             var emailList = document.createDocumentFragment();
 

@@ -1,5 +1,5 @@
 define(['app', 'models/base', 'underscore', 'models/user', 'models/message'],
-function(app, Base, _, User, Message){
+function(Assembl, Base, _, User, Message){
     'use strict';
 
     /**
@@ -16,7 +16,7 @@ function(app, Base, _, User, Message){
             }
 
             if( ! this.get('creationDate') ){
-                this.set( 'creationDate', app.getCurrentTime() );
+                this.set( 'creationDate', Assembl.getCurrentTime() );
             }
 
             var ranges = this.attributes.ranges,
@@ -44,7 +44,7 @@ function(app, Base, _, User, Message){
         /**
          * @type {string}
          */
-        urlBase: app.getApiUrl("extracts"),
+        urlBase: Assembl.getApiUrl("extracts"),
 
         /**
          * @type {Object}
@@ -64,7 +64,7 @@ function(app, Base, _, User, Message){
          * Validation
          */
         validate: function(attrs, options){
-            var currentUser = app.getCurrentUser(),
+            var currentUser = Assembl.getCurrentUser(),
                 id = currentUser.getId();
 
             if( !id ){
@@ -84,15 +84,15 @@ function(app, Base, _, User, Message){
                 idPost = this.attributes.idPost;
 
             if (idPost) {
-                if(app.segmentPostCache[idPost]) {
-                    return app.segmentPostCache[idPost];
+                if(Assembl.segmentPostCache[idPost]) {
+                    return Assembl.segmentPostCache[idPost];
                 }
-                post = app.messageList.messages.get(idPost);
+                post = Assembl.messageList.messages.get(idPost);
                 if( !post ){
                     post = new Message.Model({'@id': idPost});
                     post.fetch({async:false});
                 }
-                app.segmentPostCache[idPost] = post;
+                Assembl.segmentPostCache[idPost] = post;
             }
             return post;
         },
@@ -128,7 +128,7 @@ function(app, Base, _, User, Message){
             }
 
 
-            return app.format("<i class='{0}'></i>", cls);
+            return Assembl.format("<i class='{0}'></i>", cls);
         },
 
         /**
@@ -137,7 +137,7 @@ function(app, Base, _, User, Message){
          */
         getCreator: function(){
             var creatorId = this.get('idCreator');
-            return app.users.getById(creatorId);
+            return Assembl.users.getById(creatorId);
         },
 
         /**
@@ -149,51 +149,6 @@ function(app, Base, _, User, Message){
         }
     });
 
-    /**
-     * @class SegmentColleciton
-     */
-    var SegmentCollection = Base.Collection.extend({
-
-        /**
-         * @type {String}
-         */
-        url: app.getApiUrl("extracts"),
-
-        /**
-         * @type {IdeaModel}
-         */
-        model: SegmentModel,
-
-        /**
-         * Return the segments to compose the clipboard
-         * @return {Array<Segment>}
-         */
-        getClipboard: function(){
-            var currentUser = app.getCurrentUser(),
-                segments;
-
-            return this.filter(function(item){
-                if( item.get('idIdea') !== null ){
-                    return false;
-                }
-
-                return item.getCreator().getId() == currentUser.getId();
-            });
-        },
-
-        /**
-         * Returns the segment related to the annotation
-         * @param  {annotation} annotation
-         * @return {Segment}
-         */
-        getByAnnotation: function(annotation){
-            return this.get(annotation['@id']);
-        }
-    });
-
-    return {
-        Model: SegmentModel,
-        Collection: SegmentCollection
-    };
+    Assembl.Models.Segment = SegmentModel;
 
 });

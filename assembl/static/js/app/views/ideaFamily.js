@@ -1,5 +1,5 @@
-define(['backbone', 'underscore', 'jquery', 'models/idea', 'app', 'permissions'],
-function(Backbone, _, $, Idea, app, Permissions){
+define(['backbone', 'underscore', 'jquery', 'app'],
+function(Backbone, _, $, Assembl){
     'use strict';
 
     var IdeaFamilyView = Backbone.View.extend({
@@ -18,7 +18,7 @@ function(Backbone, _, $, Idea, app, Permissions){
          * The template
          * @type {[type]}
          */
-        template: app.loadTemplate('ideaFamily'),
+        template: Assembl.loadTemplate('ideaFamily'),
 
         /**
          * @init
@@ -34,13 +34,13 @@ function(Backbone, _, $, Idea, app, Permissions){
          * @return {IdeaInSynthesisView}
          */
         render: function(){
-            app.trigger('render');
+            Assembl.trigger('render');
 
             var
                 that = this,
                 data = this.model.toJSON(),
                 authors = [],
-                segments = app.getSegmentsByIdea(this.model),
+                segments = Assembl.getSegmentsByIdea(this.model),
                 view_data = this.view_data,
                 render_data = view_data[this.model.getId()],
                 ideaView = new this.innerViewClass({model: this.model});
@@ -80,7 +80,7 @@ function(Backbone, _, $, Idea, app, Permissions){
             var rendered_children = [];
             _.each(render_data['children'], function(idea){
                 var ideaFamilyView = new IdeaFamilyView({
-                    model:idea, 
+                    model:idea,
                     innerViewClass:that.innerViewClass},
                     view_data);
                 rendered_children.push( ideaFamilyView.render().el );

@@ -1,4 +1,4 @@
-define(['models/base', 'jquery', 'app', 'i18n', 'permissions'], function(Base, $, app, i18n, Permissions){
+define(['models/base', 'jquery', 'app', 'i18n'], function(Base, $, Assembl, i18n){
     'use strict';
 
     /**
@@ -18,7 +18,7 @@ define(['models/base', 'jquery', 'app', 'i18n', 'permissions'], function(Base, $
          * The urlRoot endpoint
          * @type {String}
          */
-        urlRoot: app.getApiUrl('explicit_subgraphs/synthesis'),
+        urlRoot: Assembl.getApiUrl('explicit_subgraphs/synthesis'),
 
         /**
          * Default values
@@ -29,30 +29,11 @@ define(['models/base', 'jquery', 'app', 'i18n', 'permissions'], function(Base, $
             introduction: i18n.gettext('Add an introduction'),
             conclusion: i18n.gettext('Add a conclusion'),
             ideas: []
-        },
+        }
 
 
     });
-    /**
-     * @class IdeaColleciton
-     */
-    var SynthesisCollection = Base.Collection.extend({
-        /**
-         * Url
-         * @type {String}
-         */
-        url: app.getApiUrl("explicit_subgraphs/synthesis"),
 
-        /**
-         * The model
-         * @type {SynthesisModel}
-         */
-        model: SynthesisModel,
-    });
-    
-    return {
-        Model: SynthesisModel,
-        Collection: SynthesisCollection
-    };
+    Assembl.Models.Synthesis = SynthesisModel;
 
 });

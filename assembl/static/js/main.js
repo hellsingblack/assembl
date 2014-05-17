@@ -1,34 +1,135 @@
-define([
-    "app",
-    "jquery",
-    "views/lateralMenu",
-    "views/ideaList",
-    "views/ideaPanel",
-    "views/segmentList",
-    "views/messageList",
-    "models/synthesis",
-    "views/synthesisPanel",
-    "models/user",
-    "models/segment",
-    "router",
-    "socket"
-], function(app, $, LateralMenu, IdeaList, IdeaPanel, SegmentList, MessageList, Synthesis, SynthesisPanel, User, Segment, Router, Socket){
+require.config({
+  baseUrl:'/static/js/',
+  waitSeconds:20,
+  urlArgs:'bust=' + (new Date()).getTime(),
+  paths:{
+    'app': 'app/app',
+    'models':'app/models',
+    'views':'app/views',
+    'collections':'app/collections',
+    'router': 'app/router',
+    'i18n': 'app/plugins/i18n',
+    'socket': 'utils/socket',
+    'types': 'utils/types',
+    'permissions': 'utils/permissions',
+    'jquery': 'bower_components/jquery/jquery.min',
+    'tipsy': 'bower_components/tipsy/src/javascripts/jquery.tipsy',
+    'backbone': 'bower_components/backbone/backbone',
+    'underscore': 'bower_components/underscore/underscore-min',
+    'marionette': 'bower_components/marionette/lib/backbone.marionette.min',
+    'jasmine': 'bower_components/jasmine/lib/jasmine-core/jasmine',
+    'jasmine-html': 'bower_components/jasmine/lib/jasmine-core/jasmine',
+    'jasmine-jquery': 'bower_components/jasmine-jquery/lib/jasmine-jquery',
+    'ckeditor': 'bower_components/ckeditor/ckeditor',
+    'moment': 'bower_components/momentjs/min/moment.min',
+    'zeroclipboard': 'bower_components/zeroclipboard/ZeroClipboard',
+    'sockjs': 'bower_components/sockjs/sockjs.min',
+    'cytoscape': 'bower_components/cytoscape/dist/cytoscape.min',
+    'jit': 'bower_components/jit/Jit/jit',
+    'sprintf': 'bower_components/sprintf/dist/sprintf.min',
+    'annotator': 'bower_components/annotator/annotator-full.min',
+    'jquery-highlight': 'app/plugins/jquery.highlight',
+    'ckeditor-sharedspace': 'app/plugins/plugin'
+  },
+  shim:{
+      'backbone': {
+          deps: ['underscore', 'jquery'],
+          exports: 'backbone'
+      },
+      'underscore': {
+          exports: '_'
+      },
+      marionette: {
+          deps: ['backbone', 'underscore'],
+          exports: "marionette"
+      },
+      'jquery': {
+          exports: 'jQuery'
+      },
+      'jquery-highlight': {
+          exports: 'jQuery',
+          deps: ['jquery']
+      },
+      'i18n': {
+          exports: 'i18n'
+      },
+      'socket': {
+          deps: ['sockjs']
+      },
+      'jasmine': {
+          exports: 'jasmine'
+      },
+      'jasmine-html': {
+          deps: ['jasmine', 'jasmine-jquery'],
+          exports: 'jasmine'
+      },
+      'jasmine-jquery': {
+          deps: ['jasmine'],
+          exports: 'jasmine'
+      },
+      'ckeditor': {
+          exports: 'CKEDITOR'
+      },
+      'ckeditor-sharedspace': {
+          deps: ['ckeditor'],
+          exports: 'CKEDITOR'
+      },
+      'tipsy': {
+          deps: ['jquery']
+      },
+      'zeroclipboard' : {
+          exports: 'ZeroClipboard'
+      },
+      'sockjs': {
+          deps: ['jquery'],
+          exports: 'SockJS'
+      },
+      'cytoscape': {
+          deps: ['jquery'],
+          exports: 'cytoscape'
+      },
+      'jit': {
+          deps: [],
+          exports: '$jit'
+      },
+      'annotator' : {
+          deps: ['jquery'],
+          exports: 'Annotator'
+      },
+      'sprintf' : {
+          deps: [],
+          exports: 'sprintf'
+      }
+  }
+
+});
+
+//Marionette application start
+
+require(['app','i18n','jquery','views/lateralMenu','views/ideaList','views/ideaPanel','views/segmentList','views/messageList',
+        'views/synthesisPanel','models/synthesis','models/user','models/segment','router','socket'],
+    function(Assembl, i18n, $, LateralMenu, IdeaList, IdeaPanel, SegmentList, MessageList,
+             SynthesisPanel, Synthesis, User, Segment, Router, Socket){
     'use strict';
 
-    app.init();
+    i18n(json);
+
+    Assembl.app.start();
+
+    Assembl.init();
 
     // The router
-    app.router = new Router();
+    Assembl.router = new Router();
 
     // The socket
-    app.socket = new Socket();
-    app.on('socket:open', function(){ $('#onlinedot').addClass('is-online').attr('title', 'online'); });
-    app.on('socket:close', function(){ $('#onlinedot').removeClass('is-online').attr('title', 'offline'); });
+    Assembl.socket = new Socket();
+    Assembl.on('socket:open', function(){ $('#onlinedot').addClass('is-online').attr('title', 'online'); });
+    Assembl.on('socket:close', function(){ $('#onlinedot').removeClass('is-online').attr('title', 'offline'); });
 
     // User
-    app.users = new User.Collection();
-    app.users.on('reset', app.loadCurrentUser);
-    app.users.fetchFromScriptTag('users-json');
+    Assembl.users = new User.Collection();
+    Assembl.users.on('reset', app.loadCurrentUser);
+    Assembl.users.fetchFromScriptTag('users-json');
 
     // Lateral menu
     // app.lateralMenu = new LateralMenu({el: '#lateralMenu'}).render();
@@ -37,35 +138,36 @@ define([
 
     // The order of these initialisations matter...
     // Segment List
-    app.segmentList = new SegmentList({el: '#segmentList', button: '#button-segmentList'});
+    Assembl.segmentList = new SegmentList({el: '#segmentList', button: '#button-segmentList'});
 
     // Idea list
-    app.ideaList = new IdeaList({el: '#ideaList', button: '#button-ideaList'});
+    Assembl.ideaList = new IdeaList({el: '#ideaList', button: '#button-ideaList'});
 
     // Idea panel
-    app.ideaPanel = new IdeaPanel({el: '#ideaPanel', button: '#button-ideaPanel'}).render();
+    Assembl.ideaPanel = new IdeaPanel({el: '#ideaPanel', button: '#button-ideaPanel'}).render();
 
     // Message
-    app.messageList = new MessageList({el: '#messageList', button: '#button-messages'}).render();
-    app.messageList.loadInitialData();
+    Assembl.messageList = new MessageList({el: '#messageList', button: '#button-messages'}).render();
+    Assembl.messageList.loadInitialData();
 
     // Synthesis
-    app.syntheses = new Synthesis.Collection();
+    Assembl.syntheses = new Synthesis.Collection();
     var nextSynthesisModel = new Synthesis.Model({'@id': 'next_synthesis'});
     nextSynthesisModel.fetch();
-    app.syntheses.add(nextSynthesisModel);
-    app.synthesisPanel = new SynthesisPanel({
+    Assembl.syntheses.add(nextSynthesisModel);
+    Assembl.synthesisPanel = new SynthesisPanel({
         el: '#synthesisPanel',
         button: '#button-synthesis',
-        model: nextSynthesisModel 
+        model: nextSynthesisModel
     });
-    
+
 
     // Fetching the ideas
-    app.segmentList.segments.fetchFromScriptTag('extracts-json');
-    app.ideaList.ideas.fetchFromScriptTag('ideas-json');
+    Assembl.segmentList.segments.fetchFromScriptTag('extracts-json');
+    Assembl.ideaList.ideas.fetchFromScriptTag('ideas-json');
 
     // Let the game begins...
-    Backbone.history.start({hashChange: false, root: "/" + app.slug });
+    Backbone.history.start({hashChange: false, root: "/" + Assembl.slug });
+
 
 });

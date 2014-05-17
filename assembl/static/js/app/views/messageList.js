@@ -1,11 +1,11 @@
-define(['backbone', 'underscore', 'jquery', 'app', 'views/messageFamily', 'models/message', 'i18n', 'views/messageListPostQuery', 'permissions', 'views/messageSend'],
-function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permissions, MessageSendView){
+define(['backbone', 'underscore', 'jquery', 'app', 'views/messageFamily', 'collections/message', 'i18n', 'views/messageListPostQuery', 'permissions', 'views/messageSend'],
+function(Backbone, _, $, Assembl, MessageFamilyView, Message, i18n, PostQuery, Permissions, MessageSendView){
     'use strict';
 
     /**
      * Constants
      */
-    var DIV_ANNOTATOR_HELP = app.format("<div class='annotator-draganddrop-help'>{0}</div>", i18n.gettext('You can drag the segment above directly to the table of ideas') ),
+    var DIV_ANNOTATOR_HELP = Assembl.format("<div class='annotator-draganddrop-help'>{0}</div>", i18n.gettext('You can drag the segment above directly to the table of ideas') ),
     DEFAULT_MESSAGE_VIEW_LI_ID_PREFIX = "defaultMessageView-";
 
     /**
@@ -39,7 +39,7 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
         numRenderInhibitedDuringRendering: 0,
         
         
-        storedMessageListConfig: app.getMessageListConfigFromStorage(),
+        storedMessageListConfig: Assembl.getMessageListConfigFromStorage(),
         /**
          * get a view style definition by id
          * @param {viewStyle.id}
@@ -61,13 +61,13 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
               });*/
             
             if( obj.button ){
-                this.button = $(obj.button).on('click', app.togglePanel.bind(window, 'messageList'));
+                this.button = $(obj.button).on('click', Assembl.togglePanel.bind(window, 'messageList'));
             }
             this.renderedMessageViewsPrevious = {};
             this.renderedMessageViewsCurrent = {};
             
             this.setViewStyle(this.getViewStyleDefById(this.storedMessageListConfig.viewStyleId) || this.ViewStyles.THREADED);
-            this.defaultMessageStyle = app.getMessageViewStyleDefById(this.storedMessageListConfig.messageStyleId) || app.AVAILABLE_MESSAGE_VIEW_STYLES.PREVIEW;
+            this.defaultMessageStyle = Assembl.getMessageViewStyleDefById(this.storedMessageListConfig.messageStyleId) || Assembl.AVAILABLE_MESSAGE_VIEW_STYLES.PREVIEW;
             this.currentQuery.setView(this.currentQuery.availableViews.REVERSE_CHRONOLOGICAL);
             
             this.listenTo(this.messages, 'reset', function() {
@@ -79,17 +79,17 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
             // re-render, not just an init
             this.listenTo(this.messages, 'change', this.initAnnotator);
             // TODO:  FIXME!!! Benoitg - 2014-05-05
-            this.listenTo(app.segmentList.segments, 'add remove reset change', this.initAnnotator);
+            this.listenTo(Assembl.segmentList.segments, 'add remove reset change', this.initAnnotator);
             
             var that = this;
-            app.on('idea:select', function(idea){
+            Assembl.on('idea:select', function(idea){
                 that.currentQuery.clearFilter(that.currentQuery.availableFilters.POST_IS_IN_CONTEXT_OF_IDEA, null);
                 if( idea ){
                     that.currentQuery.clearFilter(that.currentQuery.availableFilters.POST_IS_ORPHAN, null);
                     that.currentQuery.addFilter(that.currentQuery.availableFilters.POST_IS_IN_CONTEXT_OF_IDEA, idea.getId());
-                    app.openPanel(app.messageList);
+                    Assembl.openPanel(Assembl.messageList);
                 }
-                if(app.debugRender) {
+                if(Assembl.debugRender) {
                     console.log("messageList: triggering render because new idea was selected");
                 }
                 that.render();
@@ -105,7 +105,7 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
          * The template
          * @type {_.template}
          */
-        template: app.loadTemplate('messageList'),
+        template: Assembl.loadTemplate('messageList'),
 
         /**
          * The collapse/expand flag
@@ -123,7 +123,7 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
          * Collection with all messsages in the discussion.
          * @type {MessageCollection}
          */
-        messages: new Message.Collection(),
+        messages: new Assembl.Collections.Message,
         messagesFinishedLoading: false,
         
         /**
@@ -134,7 +134,7 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
 
         
         /**
-         * The current server-side query applied to messages
+         * The current server-side query Assembllied to messages
          * @type {Object}
          */
         currentQuery: new PostQuery(),
@@ -210,7 +210,7 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
                     DEFAULT_MESSAGE_VIEW_LI_ID_PREFIX: DEFAULT_MESSAGE_VIEW_LI_ID_PREFIX,
                     collapsed: this.collapsed,
                     queryInfo: this.currentQuery.getHtmlDescription(),
-                    canPost: app.getCurrentUser().can(Permissions.ADD_POST)
+                    canPost: Assembl.getCurrentUser().can(Permissions.ADD_POST)
                 };
 
             this.$el.html( this.template(data) );
@@ -218,7 +218,7 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
             if( views.length > 0 ){
                 this.$('.idealist').append( views );
             } else {
-                this.$('.idealist').append( app.format("<div class='margin'>{0}</div>", i18n.gettext('No messages')) );
+                this.$('.idealist').append( Assembl.format("<div class='margin'>{0}</div>", i18n.gettext('No messages')) );
             }
 
             this.renderCollapseButton();
@@ -249,7 +249,7 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
                 if(that.currentlyRendering) return "a render is already in progress, ";
                 else return "no render already in progress, ";
             }
-            if(app.debugRender) {
+            if(Assembl.debugRender) {
                 console.log("messageList:render() is firing, "+renderStatus()+this.messages.length+" messages in collection.");
                 /*
                 console.log("message collection is: ");
@@ -258,8 +258,8 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
                 })*/
             }
             this.currentlyRendering = true;
-            
-            app.trigger('render');
+
+            Assembl.trigger('render');
             if(this.messagesFinishedLoading) {
                 this.blockPanel();
                 this.currentQuery.execute(function(data){
@@ -302,7 +302,7 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
             html += this.defaultMessageStyle.label;
             html += '</span>';
             html += '<ul class="dropdown-list">';
-            _.each(app.AVAILABLE_MESSAGE_VIEW_STYLES, function(messageViewStyle) {
+            _.each(Assembl.AVAILABLE_MESSAGE_VIEW_STYLES, function(messageViewStyle) {
                 html += '<li id="' + DEFAULT_MESSAGE_VIEW_LI_ID_PREFIX + messageViewStyle.id +'" class="dropdown-listitem">'+ messageViewStyle.label+'</li>';
             });
             html += '</ul>';
@@ -433,18 +433,18 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
 
             //TODO:  Re-render message in messagelist if an annotation was added...
             this.annotator.subscribe('annotationCreated', function(annotation){
-                var segment = app.segmentList.addAnnotationAsSegment(annotation, app.currentAnnotationIdIdea);
+                var segment = Assembl.segmentList.addAnnotationAsSegment(annotation, Assembl.currentAnnotationIdIdea);
                 if( !segment.isValid() ){
                     annotator.deleteAnnotation(annotation);
-                } else if( app.currentAnnotationIdea ){
-                    app.currentAnnotationIdea.addSegmentAsChild(segment);
+                } else if( Assembl.currentAnnotationIdea ){
+                    Assembl.currentAnnotationIdea.addSegmentAsChild(segment);
                 }
-                app.currentAnnotationIdea = null;
-                app.currentAnnotationIdIdea = null;
+                Assembl.currentAnnotationIdea = null;
+                Assembl.currentAnnotationIdIdea = null;
             });
 
             this.annotator.subscribe('annotationEditorShown', function(editor, annotation){
-                app.body.append(editor.element);
+                Assembl.body.append(editor.element);
                 var save = $(editor.element).find(".annotator-save");
                 save.text(i18n.gettext('Send to clipboard'));
                 var textarea = editor.fields[0].element.firstChild,
@@ -453,12 +453,12 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
                 div.html(annotation.quote);
 
                 div.on('dragstart', function(ev){
-                    app.showDragbox(ev, annotation.quote);
-                    app.draggedAnnotation = annotation;
+                    Assembl.showDragbox(ev, annotation.quote);
+                    Assembl.draggedAnnotation = annotation;
                 });
 
                 div.on('dragend', function(ev){
-                    app.draggedAnnotation = null;
+                    Assembl.draggedAnnotation = null;
                 });
 
                 $(textarea).replaceWith(div);
@@ -515,7 +515,7 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
          * Sets the panel as full screen
          */
         setFullscreen: function(){
-            app.setFullscreen(this);
+            Assembl.setFullscreen(this);
         },
 
         /**
@@ -524,7 +524,7 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
         loadInitialData: function(){
             var that = this;
 
-            $.getJSON( app.getApiUrl('posts'), function(data){
+            $.getJSON( Assembl.getApiUrl('posts'), function(data){
                 _.each(data.posts, function(post){
                     post.collapsed = that.collapsed;
                 });
@@ -630,7 +630,7 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
             }
             if(this.storedMessageListConfig.viewStyleId != viewStyle.id) {
                 this.storedMessageListConfig.viewStyleId = viewStyle.id;
-                app.setMessageListConfigToStorage(this.storedMessageListConfig);
+                Assembl.setMessageListConfigToStorage(this.storedMessageListConfig);
             }
             
         },
@@ -666,7 +666,7 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
          */
         onDefaultMessageViewStyle: function(e){
             var messageViewStyleId = (e.currentTarget.id).replace(DEFAULT_MESSAGE_VIEW_LI_ID_PREFIX, '');
-            var messageViewStyleSelected = app.getMessageViewStyleDefById(messageViewStyleId);
+            var messageViewStyleSelected = Assembl.getMessageViewStyleDefById(messageViewStyleId);
             //console.log("onDefaultMessageViewStyle: "+messageViewStyleSelected.label);
             this.setDefaultMessageViewStyle(messageViewStyleSelected);
         },
@@ -687,7 +687,7 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
             this.renderDefaultMessageViewDropdown();
             if(this.storedMessageListConfig.messageStyleId != messageViewStyle.id) {
                 this.storedMessageListConfig.messageStyleId = messageViewStyle.id;
-                app.setMessageListConfigToStorage(this.storedMessageListConfig);
+                Assembl.setMessageListConfigToStorage(this.storedMessageListConfig);
             }
         },
         /**
@@ -697,7 +697,7 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
          */
         showMessageById: function(id, callback){
             var message = this.messages.get(id),
-                 selector = app.format('[id="message-{0}"]', id),
+                 selector = Assembl.format('[id="message-{0}"]', id),
                  el,
                  messageIsDisplayed = false,
                  that = this;
@@ -816,7 +816,7 @@ function(Backbone, _, $, app, MessageFamilyView, Message, i18n, PostQuery, Permi
             }
 
             var messageDefaultViewStyle = '';
-            _.each(app.AVAILABLE_MESSAGE_VIEW_STYLES, function(messageViewStyle) { 
+            _.each(Assembl.AVAILABLE_MESSAGE_VIEW_STYLES, function(messageViewStyle) { 
                 var key = 'click #'+DEFAULT_MESSAGE_VIEW_LI_ID_PREFIX+messageViewStyle.id;
                 data[key] = 'onDefaultMessageViewStyle';
             } );

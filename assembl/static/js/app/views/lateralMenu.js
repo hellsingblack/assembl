@@ -1,5 +1,5 @@
 define(['backbone', 'underscore', 'jquery', 'app'],
-function(Backbone, _, $, app){
+function(Backbone, _, $, Assembl){
     'use strict';
 
     var LateralMenu = Backbone.View.extend({
@@ -17,7 +17,7 @@ function(Backbone, _, $, app){
          * The template
          * @type {_.template}
          */
-        template: app.loadTemplate('lateralMenu'),
+        template: Assembl.loadTemplate('lateralMenu'),
 
         /**
          * The page's wrapper
@@ -30,7 +30,7 @@ function(Backbone, _, $, app){
          * @return {LateralMenu}
          */
         render: function(){
-            app.trigger('render');
+            Assembl.trigger('render');
             this.$el.html( this.template() );
 
             return this;
@@ -45,7 +45,7 @@ function(Backbone, _, $, app){
                 height = this.getBodyHeight(body);
 
             area.addClass('is-open');
-            body.animate({height: height+'px'}, 'fast', app.ease, function(){
+            body.animate({height: height+'px'}, 'fast', Assembl.ease, function(){
                 body.css('height', 'auto');
             });
         },
@@ -59,7 +59,7 @@ function(Backbone, _, $, app){
             body.height( body.height()+'px' );
 
             area.removeClass('is-open');
-            body.animate({height:0}, 'fast', app.ease);
+            body.animate({height:0}, 'fast', Assembl.ease);
         },
 
         /**
@@ -120,23 +120,23 @@ function(Backbone, _, $, app){
          * Open the lateralmenu
          */
         open: function(){
-            var data = { translateX: app.lateralMenuWidth + 'px' };
+            var data = { translateX: Assembl.lateralMenuWidth + 'px' };
 
-            this.$el.animate({translateX: 0}, app.lateralMenuAnimationTime, app.ease);
-            this.wrapper.animate(data, app.lateralMenuAnimationTime, app.ease);
+            this.$el.animate({translateX: 0}, Assembl.lateralMenuAnimationTime, Assembl.ease);
+            this.wrapper.animate(data, Assembl.lateralMenuAnimationTime, Assembl.ease);
             this.isOpen = true;
-            app.trigger('lateralmenu.open');
+            Assembl.trigger('lateralmenu.open');
         },
 
         /**
          * Close the lateralMenu
          */
         close: function(){
-            var data = { translateX: '-' + app.lateralMenuWidth + 'px' };
-            this.$el.animate(data, app.lateralMenuAnimationTime, app.ease);
-            this.wrapper.animate({translateX: 0}, app.lateralMenuAnimationTime, app.ease);
+            var data = { translateX: '-' + Assembl.lateralMenuWidth + 'px' };
+            this.$el.animate(data, Assembl.lateralMenuAnimationTime, Assembl.ease);
+            this.wrapper.animate({translateX: 0}, Assembl.lateralMenuAnimationTime, Assembl.ease);
             this.isOpen = false;
-            app.trigger('lateralmenu.close');
+            Assembl.trigger('lateralmenu.close');
         }
 
     });

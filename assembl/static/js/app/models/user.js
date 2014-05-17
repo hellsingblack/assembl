@@ -1,4 +1,4 @@
-define(['models/base', 'app', 'jquery', 'i18n', 'permissions'], function(Base, app, $, i18n, Permissions){
+define(['models/base', 'app', 'jquery', 'i18n', 'permissions'], function(Base, Assembl, $, i18n, Permissions){
     'use strict';
 
     var AVATAR_PLACEHOLDER = '//placehold.it/{0}';
@@ -12,7 +12,7 @@ define(['models/base', 'app', 'jquery', 'i18n', 'permissions'], function(Base, a
         /**
          * @type {String}
          */
-        url: app.getApiUrl('agents/'),
+        url: Assembl.getApiUrl('agents/'),
 
         /**
          * Defaults
@@ -91,54 +91,6 @@ define(['models/base', 'app', 'jquery', 'i18n', 'permissions'], function(Base, a
 
     });
 
-
-    /**
-     * @class UserCollection
-     */
-    var UserCollection = Base.Collection.extend({
-        /**
-         * @type {String}
-         */
-        url: app.getApiUrl('agents/'),
-
-        /**
-         * The model
-         * @type {UserModel}
-         */
-        model: UserModel,
-
-        /**
-         * Returns the user by his/her id, or return the unknown user
-         * @param {Number} id
-         * @type {User}
-         */
-        getById: function(id){
-            var user = this.get(id);
-            return user || this.getUnknownUser();
-        },
-
-        /**
-         * Returns the unknown user
-         * @return {User}
-         */
-        getUnknownUser: function(){
-            return UNKNOWN_USER;
-        }
-    });
-
-    /**
-     * The unknown User
-     * @type {UserModel}
-     */
-    var UNKNOWN_USER = new UserModel({
-        id: UNKNOWN_USER_ID,
-        name: i18n.gettext('Unknown user')
-    });
-
-
-    return {
-        Model: UserModel,
-        Collection: UserCollection
-    };
+    Assembl.Models.User = UserModel;
 
 });

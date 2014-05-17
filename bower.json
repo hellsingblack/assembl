@@ -29,6 +29,8 @@
     "zeroclipboard": "~1.2.3",
     "tipsy": "~0.1.7",
     "jasmine-jquery": "~1.7.0",
-    "sprintf": "~1.0.0"
+    "sprintf": "~1.0.0",
+    "marionette": "~1.8.5",
+    "annotator": "~1.2.9"
   }
 }

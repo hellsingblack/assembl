@@ -1,5 +1,5 @@
 define(['backbone', 'underscore', 'models/idea', 'models/message', 'app', 'i18n', 'types', 'views/editableField', 'views/ckeditorField', 'permissions', 'views/messageSend'],
-function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorField, Permissions, MessageSendView){
+function(Backbone, _, Idea, Message, Assembl, i18n, Types, EditableField, CKEditorField, Permissions, MessageSendView){
     'use strict';
 
     var LONG_TITLE_ID = 'ideaPanel-longtitle';
@@ -13,7 +13,7 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
          * The tempate
          * @type {_.template}
          */
-        template: app.loadTemplate('ideaPanel'),
+        template: Assembl.loadTemplate('ideaPanel'),
 
         /**
          * @type {Idea.Model}
@@ -31,7 +31,7 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
             }
 
             if( ! obj.idea ){
-                this.idea = new Idea.Model();
+                this.idea = new Assembl.Models.Idea();
             }
 
             this.idea.on('change', this.render, this);
@@ -40,10 +40,10 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
             // is associated with the idea, the idea will recieve a change event
             // on the socket
             //app.segmentList.segments.on('change reset', this.render, this);
-            app.users.on('reset', this.render, this);
+            Assembl.users.on('reset', this.render, this);
             
             var that = this;
-            app.on('idea:select', function(idea){
+            Assembl.on('idea:select', function(idea){
                 that.setCurrentIdea(idea);
                 if(idea) {
                     $('#button-ideaPanel').show();
@@ -58,13 +58,13 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
          * The render
          */
         render: function(){
-            if(app.debugRender) {
+            if(Assembl.debugRender) {
                 console.log("ideaPanel:render() is firing");
             }
-            app.trigger('render');
+            Assembl.trigger('render');
 
             var segments = this.idea.getSegments(),
-                currentUser = app.getCurrentUser(),
+                currentUser = Assembl.getCurrentUser(),
                 editing = currentUser.can(Permissions.EDIT_IDEA) && this.idea.get('ideaPanel-editing') || false;
             this.$el.html( this.template( {
                 idea:this.idea,
@@ -88,7 +88,7 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
             });
             shortTitleField.renderTo(this.$('#ideaPanel-shorttitle'));
 
-            app.initClipboard();
+            Assembl.initClipboard();
 
             this.longTitleField = new CKEditorField({
                 'model': this.idea,
@@ -110,7 +110,7 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
                 'send_button_label': i18n.gettext('Send your comment'),
                 'subject_label': null,
                 'mandatory_body_missing_msg': i18n.gettext('You need to type a comment first...'),
-                'mandatory_subject_missing_msg': null,
+                'mandatory_subject_missing_msg': null
             });
             this.$('#ideaPanel-comment').append( this.commentView.render().el );
             return this;
@@ -146,9 +146,9 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
          * @param {Segment} segment
          */
         showSegment: function(segment){
-            var selector = app.format('.box[data-segmentid={0}]', segment.cid),
+            var selector = Assembl.format('.box[data-segmentid={0}]', segment.cid),
                 idIdea = segment.get('idIdea'),
-                idea = app.ideaList.ideas.get(idIdea),
+                idea = Assembl.ideaList.ideas.get(idIdea),
                 box;
 
             if( !idea ){
@@ -187,9 +187,9 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
                 this.idea.set('isSelected', true);
 
                 if( this.idea.get('@type') === Types.IDEA ){
-                    app.openPanel(app.ideaPanel);
+                    Assembl.openPanel(app.ideaPanel);
                 } else {
-                    app.closePanel(app.ideaPanel);
+                    Assembl.closePanel(app.ideaPanel);
                 }
             } else {
                 if( this.idea ){
@@ -197,7 +197,7 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
                 }
 
                 this.idea = new Idea.Model();
-                app.closePanel(app.ideaPanel);
+                Assembl.closePanel(Assembl.ideaPanel);
             }
 
             this.idea.on('change', this.render, this);
@@ -226,8 +226,8 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
             this.blockPanel();
             this.idea.destroy({ success: function(){
                 that.unblockPanel();
-                app.closePanel( app.ideaPanel );
-                app.trigger('idea:delete');
+                Assembl.closePanel( app.ideaPanel );
+                Assembl.trigger('idea:delete');
             }});
         },
 
@@ -254,14 +254,14 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
          */
         onDragStart: function(ev){
             //TODO: Deal with editing own extract (EDIT_MY_EXTRACT)
-            if( app.segmentList && app.segmentList.segments && app.getCurrentUser().can(Permissions.EDIT_EXTRACT)){
+            if( Assembl.segmentList && Assembl.segmentList.segments && Assembl.getCurrentUser().can(Permissions.EDIT_EXTRACT)){
                 ev.currentTarget.style.opacity = 0.4;
 
                 var cid = ev.currentTarget.getAttribute('data-segmentid'),
-                    segment = app.segmentList.segments.getByCid(cid);
+                    segment = Assembl.segmentList.segments.getByCid(cid);
                 console.log( cid );
-                app.showDragbox(ev, segment.getQuote());
-                app.draggedSegment = segment;
+                Assembl.showDragbox(ev, segment.getQuote());
+                Assembl.draggedSegment = segment;
             }
         },
 
@@ -270,7 +270,7 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
          */
         onDragEnd: function(ev){
             ev.currentTarget.style.opacity = '';
-            app.draggedSegment = null;
+            Assembl.draggedSegment = null;
         },
 
         /**
@@ -278,7 +278,7 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
          */
         onDragOver: function(ev){
             ev.preventDefault();
-            if( app.draggedSegment !== null ){
+            if( Assembl.draggedSegment !== null ){
                 this.panel.addClass("is-dragover");
             }
         },
@@ -301,7 +301,7 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
 
             this.panel.trigger('dragleave');
 
-            var segment = app.getDraggedSegment();
+            var segment = Assembl.getDraggedSegment();
             if( segment ){
                 this.addSegment(segment);
             }
@@ -313,8 +313,8 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
         onCloseButtonClick: function(ev){
             var cid = ev.currentTarget.getAttribute('data-segmentid');
 
-            if( app.segmentList && app.segmentList.segments ){
-                var segment = app.segmentList.segments.get(cid);
+            if( Assembl.segmentList && Assembl.segmentList.segments ){
+                var segment = Assembl.segmentList.segments.get(cid);
 
                 if( segment ){
                     segment.save('idIdea', null);
@@ -336,7 +336,7 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
          * @event
          */
         onTopCloseButtonClick: function(){
-            app.setCurrentIdea(null);
+            Assembl.setCurrentIdea(null);
         },
 
         /**
@@ -355,9 +355,9 @@ function(Backbone, _, Idea, Message, app, i18n, Types, EditableField, CKEditorFi
          */
         onSegmentLinkClick: function(ev){
             var cid = ev.currentTarget.getAttribute('data-segmentid'),
-                segment = app.segmentList.segments.get(cid);
+                segment = Assembl.segmentList.segments.get(cid);
 
-            app.showTargetBySegment(segment);
+            Assembl.showTargetBySegment(segment);
         }
 
     });

@@ -1,5 +1,5 @@
 define(['backbone', 'underscore', 'jquery', 'models/idea', 'models/segment', 'app', 'permissions', 'views/ckeditorField', 'views/messageSend'],
-function(Backbone, _, $, Idea, Segment, app, Permissions, CKEditorField, MessageSendView){
+function(Backbone, _, $, Idea, Segment, Assembl, Permissions, CKEditorField, MessageSendView){
     'use strict';
 
     var IdeaInSynthesisView = Backbone.View.extend({
@@ -13,7 +13,7 @@ function(Backbone, _, $, Idea, Segment, app, Permissions, CKEditorField, Message
          * The template
          * @type {[type]}
          */
-        template: app.loadTemplate('ideaInSynthesis'),
+        template: Assembl.loadTemplate('ideaInSynthesis'),
 
         /**
          * @init
@@ -28,12 +28,12 @@ function(Backbone, _, $, Idea, Segment, app, Permissions, CKEditorField, Message
          * @return {IdeaInSynthesisView}
          */
         render: function(){
-            app.trigger('render');
+            Assembl.trigger('render');
 
             var
                 data = this.model.toJSON(),
                 authors = [],
-                segments = app.getSegmentsByIdea(this.model);
+                segments = Assembl.getSegmentsByIdea(this.model);
 
             this.$el.addClass('synthesis-idea');
 
@@ -96,7 +96,7 @@ function(Backbone, _, $, Idea, Segment, app, Permissions, CKEditorField, Message
                 'cancel_button_label': null,
                 'send_button_label': i18n.gettext('Send your reply'),
                 'subject_label': null,
-                'default_subject': 'Re: ' + app.stripHtml(this.model.getLongTitleDisplayText()).substring(0,50),
+                'default_subject': 'Re: ' + Assembl.stripHtml(this.model.getLongTitleDisplayText()).substring(0,50),
                 'mandatory_body_missing_msg': i18n.gettext('You did not type a response yet...'),
                 'mandatory_subject_missing_msg': null
             });
@@ -142,7 +142,7 @@ function(Backbone, _, $, Idea, Segment, app, Permissions, CKEditorField, Message
          */
         onEditableAreaClick: function(ev){
             console.log("onEditableAreaClick");
-            if(app.getCurrentUser().can(Permissions.EDIT_IDEA)) {
+            if(Assembl.getCurrentUser().can(Permissions.EDIT_IDEA)) {
                 this.editing = true;
                 this.render();
             }
