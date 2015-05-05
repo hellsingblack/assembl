@@ -1,3 +1,4 @@
+
 Assembl
 ================
 
@@ -13,6 +14,8 @@ Assembl is made with the following technologies :
 - [Nginx](http://nginx.org/)
 
 Assembl is developed by [Imagine For People](http://imaginationforpeople.org)
+
+## Installation for developers
 
 **Prerequisites**
 
