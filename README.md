@@ -12,7 +12,7 @@ Assembl is made with the following technologies :
 - [The Pyramid Framework](http://www.pylonsproject.org/)
 - [Nginx](http://nginx.org/)
 
-Tatami is developed by [Imagine For People](http://imaginationforpeople.org)
+Assembl is developed by [Imagine For People](http://imaginationforpeople.org)
 
 **Prerequisites**
 
