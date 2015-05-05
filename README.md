@@ -6,6 +6,15 @@ Presentation
 
 Assembl is an Open Source application that enables hundreds or even thousands of people to work together effectively on the definition of new ideas. The application supports the belief that with the proper conditions, people working together can think smarter than any one member of the group could alone. Traditional collective intelligence software tends to refine ideas from one person. Assembl is different. It focuses on co-building new ideas.
 
+Assembl is made with the following technologies :
+
+- HTML5, [MarionetteJS](http://marionettejs.com/)
+- [The Pyramid Framework](http://www.pylonsproject.org/)
+- [Apache Cassandra](http://cassandra.apache.org/)
+- [Elastic Search](http://www.elasticsearch.org/)
+
+Tatami is developed by [Imagine For People](http://imaginationforpeople.org)
+
 **Prerequisites**
 
 - On Mac OS X 10.9.2: The system python is incompatible with the clang 5.1. You need to remove all occurences of `-mno-fused-madd` in `/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/_sysconfigdata.py`. Also renew (or delete) the corresponding `.pyc`, `.pyo` files.
