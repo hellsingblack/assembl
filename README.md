@@ -10,8 +10,7 @@ Assembl is made with the following technologies :
 
 - HTML5, [MarionetteJS](http://marionettejs.com/)
 - [The Pyramid Framework](http://www.pylonsproject.org/)
-- [Apache Cassandra](http://cassandra.apache.org/)
-- [Elastic Search](http://www.elasticsearch.org/)
+- [Nginx](http://nginx.org/)
 
 Tatami is developed by [Imagine For People](http://imaginationforpeople.org)
 
