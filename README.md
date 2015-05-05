@@ -1,4 +1,10 @@
-## Assembl
+Assembl
+================
+
+Presentation
+------------------
+
+Assembl is an Open Source application that enables hundreds or even thousands of people to work together effectively on the definition of new ideas. The application supports the belief that with the proper conditions, people working together can think smarter than any one member of the group could alone. Traditional collective intelligence software tends to refine ideas from one person. Assembl is different. It focuses on co-building new ideas.
 
 **Prerequisites**
 
